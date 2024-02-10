@@ -7,7 +7,7 @@ Proyecto colaborativo para No Country - Sistema de Gestión y Asesoramiento Hort
 * Laura Tamborini - Tester QA
 * Milton Oscar Flores - Desarrollador Frontend
 * Eduardo Sebastian Tejeda - Diseñador
-* Sandra - Tester QA
+* Sandra Scordamaglia - Tester QA
 * Lorena Aylen Gil - Desarrolladora Frontend
 
 
