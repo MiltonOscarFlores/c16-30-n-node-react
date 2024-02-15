@@ -37,6 +37,8 @@ const LoginBackground = styled.section`
   background-size: cover;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const TextoLoginBackground = styled.section`
@@ -58,6 +60,7 @@ const Myh3 = styled.h3`
   font-weight: 300;
   font-style: normal;
   font-size: 16px;
+  margin-top: -20px;
 `;
 
 const Login = () => {
