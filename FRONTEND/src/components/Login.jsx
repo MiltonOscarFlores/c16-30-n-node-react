@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import LoginBackgroundSVG from "../assets/images/LoginBackground.svg";
 import Form from "./Form";
+import ButtonGreen from "./ButttonGreen";
 
 const Wrapper = styled.section`
   @media (min-width: 768px) {
@@ -63,6 +64,7 @@ const Myh3 = styled.h3`
   margin-top: -20px;
 `;
 
+////////////////////////////////////////////////////////////////
 const Login = () => {
   return (
     <Wrapper>
@@ -70,6 +72,10 @@ const Login = () => {
         <TextoLoginBackground>
           <Myh2>Bienvenido de vuelta</Myh2>
           <Myh3>¡Nos alegramos de volver a verte!</Myh3>
+          <ButtonGreen
+            text="Continuar con Google"
+            iconG={true}
+          />
         </TextoLoginBackground>
       </BackgroundGoogle>
       <LoginBackground>
