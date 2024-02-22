@@ -4,8 +4,8 @@ import ButtonGreen from "./ButttonGreen";
 const FormWrap = styled.section`
   margin: 0 auto;
   background: #e9e5d6;
-  width: 660px;
-  height: 500px;
+  width: 575px;
+  height: 430px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -29,28 +29,11 @@ const MyInput = styled.input`
   &:focus {
     outline: 2px solid rgba(70, 78, 46, 0.5);
   }
-  &[type="checkbox"] {
-    outline: red;
-  }
-`;
-
-const MyCheckbox = styled.input`
-  &[type="checkbox"] {
-    color: #bf4f74;
-    outline: none;
-  }
 `;
 
 const MyLabel = styled.label`
   font-weight: 400;
   font-size: 13px;
-`;
-const MyCheckboxContainer = styled.section`
-  display: flex;
-  margin-bottom: 15px;
-`;
-const SpanRecuerdame = styled.span`
-  margin-left: 5px;
 `;
 
 const ButtonGreenForm = styled(ButtonGreen)`
@@ -59,15 +42,6 @@ const ButtonGreenForm = styled(ButtonGreen)`
   height: 36px;
 `;
 
-const Parrafo = styled.p`
-  margin-top: 25px;
-  font-size: 14px;
-`;
-
-const SpanReg = styled.span`
-  font-weight: 600;
-  cursor: pointer;
-`;
 //////////////////////////////////////////////////////
 const Form = () => {
   const handleSubmit = (event) => {
@@ -78,23 +52,23 @@ const Form = () => {
   return (
     <FormWrap>
       <MyForm onSubmit={handleSubmit}>
+        <MyLabel htmlFor="username">Nombre de Usuario</MyLabel>
+        <MyInput
+          type="textField"
+          id="username"
+        />
         <MyLabel htmlFor="email">Email</MyLabel>
         <MyInput type="email" />
         <MyLabel htmlFor="contraseña">Contraseña</MyLabel>
-        <MyInput type="password" />
-        <MyCheckboxContainer>
-          <MyCheckbox type="checkbox" />
-          <MyLabel>
-            <SpanRecuerdame>Recuérdame</SpanRecuerdame>
-          </MyLabel>
-        </MyCheckboxContainer>
+        <MyInput
+          type="password"
+          style={{ marginBottom: "2rem" }}
+        />
+
         <ButtonGreenForm
-          text="Ingresar"
+          text="Crear cuenta"
           iconG={false}
         />
-        <Parrafo>
-          ¿No tienes una cuenta? <SpanReg>Regístrate aquí</SpanReg>
-        </Parrafo>
       </MyForm>
     </FormWrap>
   );

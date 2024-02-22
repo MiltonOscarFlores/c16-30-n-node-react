@@ -7,20 +7,22 @@ const BtnGoogle = styled.button`
   background: #464e2e;
   color: #ffffff;
   font-family: "Poppins", sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-size: 13px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 1.3px 1.5px 2px rgba(0, 0, 0, 0.2);
   transition: border-color 0.2s;
 
   &:active {
     transform: translateY(1px);
     background-color: #3d4425;
     transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2)
+    box-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const IconoGoogle = styled.img`

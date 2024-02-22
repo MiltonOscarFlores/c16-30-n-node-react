@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import LoginBackgroundSVG from "../assets/images/LoginBackground.svg";
-import Form from "./Form";
+import SignUpBackgroundSVG from "../assets/images/SignUpBackground.svg";
+import FormSignUp from "./FormSignUp";
 import ButtonGreen from "./ButttonGreen";
 
 const Wrapper = styled.section`
@@ -32,10 +32,10 @@ const BackgroundGoogle = styled.section`
   align-items: center;
 `;
 
-const LoginBackground = styled.section`
+const SignUpBackground = styled.section`
   width: 75%;
   height: 658px;
-  background: url(${LoginBackgroundSVG}) no-repeat bottom;
+  background: url(${SignUpBackgroundSVG}) no-repeat bottom;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -66,24 +66,24 @@ const Myh3 = styled.h3`
 `;
 
 ////////////////////////////////////////////////////////////////
-const Login = () => {
+const SignUp = () => {
   return (
     <Wrapper>
       <BackgroundGoogle>
         <TextoLoginBackground>
-          <Myh2>Bienvenido de vuelta</Myh2>
-          <Myh3>¡Nos alegramos de volver a verte!</Myh3>
+          <Myh2>Bienvenido</Myh2>
+          <Myh3>¡Nos alegramos de que te unas!</Myh3>
           <ButtonGreen
             text="Continuar con Google"
             iconG={true}
           />
         </TextoLoginBackground>
       </BackgroundGoogle>
-      <LoginBackground>
-        <Form />
-      </LoginBackground>
+      <SignUpBackground>
+        <FormSignUp />
+      </SignUpBackground>
     </Wrapper>
   );
 };
 
-export default Login;
+export default SignUp;
