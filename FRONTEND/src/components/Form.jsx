@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import ButtonGreen from "./ButttonGreen";
+import { Link } from "react-router-dom";
 
 const FormWrap = styled.section`
   margin: 0 auto;
   background: #e9e5d6;
-  width: 660px;
-  height: 500px;
+  width: 575px;
+  height: 430px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -62,9 +63,11 @@ const ButtonGreenForm = styled(ButtonGreen)`
 const Parrafo = styled.p`
   margin-top: 25px;
   font-size: 14px;
+  text-align: center;
 `;
 
 const SpanReg = styled.span`
+  text-decoration: none;
   font-weight: 600;
   cursor: pointer;
 `;
@@ -93,7 +96,10 @@ const Form = () => {
           iconG={false}
         />
         <Parrafo>
-          ¿No tienes una cuenta? <SpanReg>Regístrate aquí</SpanReg>
+          ¿No tienes una cuenta? <br />
+          <Link to="/signup">
+            <SpanReg>Regístrate aquí</SpanReg>
+          </Link>
         </Parrafo>
       </MyForm>
     </FormWrap>

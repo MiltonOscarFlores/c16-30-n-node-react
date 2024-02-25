@@ -15,7 +15,7 @@ const Wrapper = styled.section`
     justify-content: space-around;
     align-items: center;
     max-width: 1229px;
-    height: 656px;
+    height: 600px;
     margin: 0 auto;
     background: rgb(199, 205, 176);
     background: linear-gradient(
@@ -106,7 +106,7 @@ const MyVectorMacetas = styled.div`
   width: 196px;
   height: 128px;
   position: absolute;
-  top: 36rem;
+  top: 33rem;
   left: 10rem;
 `;
 

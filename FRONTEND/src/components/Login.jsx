@@ -14,6 +14,7 @@ const Wrapper = styled.section`
     display: flex;
 
     max-width: 1229px;
+    height: 600px;
     margin: 0 auto;
     background: #e9e5d6;
     text-align: center;
@@ -24,7 +25,7 @@ const Wrapper = styled.section`
 
 const BackgroundGoogle = styled.section`
   width: 350px;
-  height: 658px;
+  height: 600px;
   background: #e9e5d6;
   border-radius: 15px 0px 0px 15px;
   display: flex;
@@ -34,7 +35,7 @@ const BackgroundGoogle = styled.section`
 
 const LoginBackground = styled.section`
   width: 75%;
-  height: 658px;
+  height: 600px;
   background: url(${LoginBackgroundSVG}) no-repeat bottom;
   background-size: cover;
   display: flex;

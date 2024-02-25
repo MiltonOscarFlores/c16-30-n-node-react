@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import LogoImage from "../assets/images/Logo.svg";
+import { Link } from "react-router-dom";
 
 const MyNavbar = styled.div`
   background-color: #e9e5d6;
@@ -39,11 +40,15 @@ const NavBtnIngresar = styled.button`
 const Navbar = () => {
   return (
     <MyNavbar>
-      <Logo
-        src={LogoImage}
-        alt="Logo Huerta Facil"
-      />
-      <NavBtnIngresar>Ingresar</NavBtnIngresar>
+      <Link to="/">
+        <Logo
+          src={LogoImage}
+          alt="Logo Huerta Facil"
+        />
+      </Link>
+      <Link to="/login">
+        <NavBtnIngresar>Ingresar</NavBtnIngresar>
+      </Link>
     </MyNavbar>
   );
 };
