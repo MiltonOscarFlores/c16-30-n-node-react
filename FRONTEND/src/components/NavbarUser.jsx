@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import LogoImage from "../assets/images/Logo.svg";
+import ConfigSvg from "../assets/images/Config.svg";
+import ExitSvg from "../assets/images/Exit.svg";
 import { Link } from "react-router-dom";
 
 const MyNavbar = styled.div`
@@ -33,6 +35,20 @@ const NavBtnIngresar = styled.button`
   }
 `;
 
+const BtnConfig = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+const BtnExit = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 15px;
+`;
+
+///////////////////////////////////////////////////////
+
 const NavbarUser = () => {
   return (
     <MyNavbar>
@@ -50,8 +66,22 @@ const NavbarUser = () => {
           <NavBtnIngresar>Recordatorios</NavBtnIngresar>
         </Link>
         <Link to="/configuser">
-          <NavBtnIngresar>Opc</NavBtnIngresar>
-          <NavBtnIngresar>Exit</NavBtnIngresar>
+          <BtnConfig>
+            <img
+              src={ConfigSvg}
+              alt="Boton Configuracion"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </BtnConfig>
+        </Link>
+        <Link to="/exit">
+          <BtnExit>
+            <img
+              src={ExitSvg}
+              alt="Boton Salir"
+              style={{ width: "16px", height: "16px" }}
+            />
+          </BtnExit>
         </Link>
       </div>
     </MyNavbar>
