@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ButtonGreen from "./ButttonGreen";
 import { Link } from "react-router-dom";
 
 const FormWrap = styled.section`
@@ -24,14 +23,17 @@ const MyInput = styled.input`
   padding: 0.5em;
   border: 2px solid #464e2e;
   background-color: #e9e5d6;
-  border-radius: 6px;
+  border: 0;
+  border-bottom: 2px solid #9a9a9a;
   margin: 5px 0px 15px;
 
   &:focus {
-    outline: 2px solid rgba(70, 78, 46, 0.5);
+    outline: none;
   }
-  &[type="checkbox"] {
-    outline: red;
+
+  &::placeholder {
+    font-size: 14px;
+    color: #9a9a9a;
   }
 `;
 
@@ -52,12 +54,32 @@ const MyCheckboxContainer = styled.section`
 `;
 const SpanRecuerdame = styled.span`
   margin-left: 5px;
+  color: #9a9a9a;
 `;
 
-const ButtonGreenForm = styled(ButtonGreen)`
+const ButtonGreenForm = styled.button`
   /* Estilos específicos para el botón en el formulario */
-  width: 150px;
-  height: 36px;
+  width: 400px;
+  height: 40px;
+  background: #464e2e;
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 13px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1.3px 1.5px 2px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+
+  &:active {
+    transform: translateY(1px);
+    background-color: #3d4425;
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+    box-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const Parrafo = styled.p`
@@ -71,6 +93,12 @@ const SpanReg = styled.span`
   font-weight: 600;
   cursor: pointer;
 `;
+const MyH1 = styled.h1`
+  font-weight: 600;
+  font-size: 28px;
+  text-align: center;
+  padding-top: 10px;
+`;
 //////////////////////////////////////////////////////
 const Form = () => {
   const handleSubmit = (event) => {
@@ -81,20 +109,24 @@ const Form = () => {
   return (
     <FormWrap>
       <MyForm onSubmit={handleSubmit}>
-        <MyLabel htmlFor="email">Email</MyLabel>
-        <MyInput type="email" />
-        <MyLabel htmlFor="contraseña">Contraseña</MyLabel>
-        <MyInput type="password" />
+        <MyH1>Iniciar sesión</MyH1>
+        <MyInput
+          type="email"
+          placeholder="Email"
+        />
+        <MyInput
+          type="password"
+          placeholder="Contaseña"
+        />
         <MyCheckboxContainer>
           <MyCheckbox type="checkbox" />
           <MyLabel>
             <SpanRecuerdame>Recuérdame</SpanRecuerdame>
           </MyLabel>
         </MyCheckboxContainer>
-        <ButtonGreenForm
-          text="Ingresar"
-          iconG={false}
-        />
+        <Link to="/mainuser">
+          <ButtonGreenForm>Iniciar sesión</ButtonGreenForm>
+        </Link>
         <Parrafo>
           ¿No tienes una cuenta? <br />
           <Link to="/signup">

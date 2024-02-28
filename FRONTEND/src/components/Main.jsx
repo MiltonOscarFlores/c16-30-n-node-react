@@ -61,7 +61,7 @@ const ContainerRight = styled.section`
 const MyInput = styled.input`
   padding: 0.5em;
   border: 2px solid #464e2e;
-  background-color: #e9e5d6;
+  background-color: transparent;
   border-radius: 6px;
   margin-top: -40px;
 
@@ -106,8 +106,8 @@ const MyVectorMacetas = styled.div`
   width: 196px;
   height: 128px;
   position: absolute;
-  top: 33rem;
-  left: 10rem;
+  margin-left: -60rem;
+  margin-top: 25rem;
 `;
 
 const Main = () => {

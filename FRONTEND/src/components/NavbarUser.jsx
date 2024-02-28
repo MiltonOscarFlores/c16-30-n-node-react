@@ -20,25 +20,20 @@ const Logo = styled.img`
 `;
 
 const NavBtnIngresar = styled.button`
-  background: #464e2e;
-  color: #ffffff;
+  background: transparent;
+  color: black;
   font-family: "Poppins", sans-serif;
-  font-size: 12px;
-  border-radius: 10px;
+  font-size: 20px;
   padding: 3px 20px;
   height: 30px;
-  box-shadow: 1.3px 1.5px 2px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.2s;
 
   &:active {
     transform: translateY(1px);
-    background-color: #3d4425;
     transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
-    box-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.2);
   }
 `;
 
-const Navbar = () => {
+const NavbarUser = () => {
   return (
     <MyNavbar>
       <Link to="/">
@@ -47,11 +42,20 @@ const Navbar = () => {
           alt="Logo Huerta Facil"
         />
       </Link>
-      <Link to="/login">
-        <NavBtnIngresar>Ingresar</NavBtnIngresar>
-      </Link>
+      <div>
+        <Link to="/favoritos">
+          <NavBtnIngresar>Favoritos</NavBtnIngresar>
+        </Link>
+        <Link to="/recordatorios">
+          <NavBtnIngresar>Recordatorios</NavBtnIngresar>
+        </Link>
+        <Link to="/configuser">
+          <NavBtnIngresar>Opc</NavBtnIngresar>
+          <NavBtnIngresar>Exit</NavBtnIngresar>
+        </Link>
+      </div>
     </MyNavbar>
   );
 };
 
-export default Navbar;
+export default NavbarUser;

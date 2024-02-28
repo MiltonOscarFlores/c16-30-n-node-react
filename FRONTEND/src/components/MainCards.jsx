@@ -8,7 +8,6 @@ const MainCardsContainer = styled.div`
   max-width: 1229px;
   min-height: 600px;
   margin: 0 auto;
-  outline: 1px solid red;
 `;
 
 const PlantCard = styled.div`
