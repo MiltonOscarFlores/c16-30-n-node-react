@@ -131,6 +131,12 @@ const Main = () => {
           placeholder="Buscar planta..."
           onChange={(e) => {
             setInputValue(e.target.value)}}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+              search(e)
+            }
+            return
+          }}
         />
         <MyIconSearch onClick={search}>
           <MySpanVector />
