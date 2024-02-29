@@ -1,11 +1,11 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import ButtonGreen from "./ButttonGreen";
 
 const FormWrap = styled.section`
   margin: 0 auto;
   background: #e9e5d6;
-  width: 575px;
-  height: 430px;
+  width: 540px;
+  height: 500px;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -23,25 +23,66 @@ const MyInput = styled.input`
   padding: 0.5em;
   border: 2px solid #464e2e;
   background-color: #e9e5d6;
-  border-radius: 6px;
+  border: 0;
+  border-bottom: 2px solid #9a9a9a;
   margin: 5px 0px 15px;
 
   &:focus {
-    outline: 2px solid rgba(70, 78, 46, 0.5);
+    outline: none;
+  }
+
+  &::placeholder {
+    font-size: 14px;
+    color: #9a9a9a;
   }
 `;
 
-const MyLabel = styled.label`
-  font-weight: 400;
-  font-size: 13px;
-`;
-
-const ButtonGreenForm = styled(ButtonGreen)`
+const ButtonGreenForm = styled.button`
   /* Estilos específicos para el botón en el formulario */
-  width: 150px;
-  height: 36px;
+  width: 400px;
+  height: 40px;
+  background: #464e2e;
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 13px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1.3px 1.5px 2px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+
+  &:active {
+    transform: translateY(1px);
+    background-color: #3d4425;
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+    box-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.2);
+  }
 `;
 
+const MyH1 = styled.h1`
+  font-weight: 600;
+  font-size: 28px;
+  text-align: center;
+  margin-top: 1px;
+`;
+
+const MySelect = styled.select`
+  padding: 0.5em;
+  border: 2px solid #464e2e;
+  background-color: #e9e5d6;
+  border: 0;
+  border-bottom: 2px solid #9a9a9a;
+  margin: 15px 0px 50px;
+  font-size: 14px;
+  color: #9a9a9a;
+
+  &:focus {
+    outline: none;
+  }
+`;
 //////////////////////////////////////////////////////
 const Form = () => {
   const handleSubmit = (event) => {
@@ -52,23 +93,57 @@ const Form = () => {
   return (
     <FormWrap>
       <MyForm onSubmit={handleSubmit}>
-        <MyLabel htmlFor="username">Nombre de Usuario</MyLabel>
+        <MyH1>Crear cuenta</MyH1>
         <MyInput
           type="textField"
           id="username"
+          placeholder="Nombre de Usuario"
         />
-        <MyLabel htmlFor="email">Email</MyLabel>
-        <MyInput type="email" />
-        <MyLabel htmlFor="contraseña">Contraseña</MyLabel>
+        <MyInput
+          type="email"
+          placeholder="Email"
+        />
         <MyInput
           type="password"
-          style={{ marginBottom: "2rem" }}
+          placeholder="Contaseña"
         />
+        <MySelect id="provincia">
+          <option
+            value=""
+            disabled
+            selected
+            hidden
+          >
+            Provincia
+          </option>
+          <option value="buenosaires">Buenos Aires</option>
+          <option value="catamarca">Catamarca</option>
+          <option value="chaco">Chaco</option>
+          <option value="chubut">Chubut</option>
+          <option value="cordoba">Córdoba</option>
+          <option value="corrientes">Corrientes</option>
+          <option value="entrerios">Entre Ríos</option>
+          <option value="formosa">Formosa</option>
+          <option value="jujuy">Jujuy</option>
+          <option value="lapampa">La Pampa</option>
+          <option value="larioja">La Rioja</option>
+          <option value="mendoza">Mendoza</option>
+          <option value="misiones">Misiones</option>
+          <option value="neuquen">Neuquén</option>
+          <option value="rionegro">Río Negro</option>
+          <option value="salta">Salta</option>
+          <option value="sanjuan">San Juan</option>
+          <option value="sanluis">San Luis</option>
+          <option value="santacruz">Santa Cruz</option>
+          <option value="santafe">Santa Fe</option>
+          <option value="santiago">Santiago del Estero</option>
+          <option value="tierradelfuego">Tierra del Fuego</option>
+          <option value="tucuman">Tucumán</option>
+        </MySelect>
 
-        <ButtonGreenForm
-          text="Crear cuenta"
-          iconG={false}
-        />
+        <Link to="/mainuser">
+          <ButtonGreenForm>Crear cuenta</ButtonGreenForm>
+        </Link>
       </MyForm>
     </FormWrap>
   );

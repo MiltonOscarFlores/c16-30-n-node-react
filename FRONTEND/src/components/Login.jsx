@@ -53,14 +53,14 @@ const TextoLoginBackground = styled.section`
 
 const Myh2 = styled.h2`
   font-family: "Poppins", sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   font-style: normal;
   font-size: 24px;
 `;
 
 const Myh3 = styled.h3`
   font-family: "Poppins", sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   font-style: normal;
   font-size: 16px;
   margin-top: -20px;

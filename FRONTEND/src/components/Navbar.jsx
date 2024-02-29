@@ -7,6 +7,7 @@ const MyNavbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1229px;
   height: 50px;
   margin: 0px 0px 15px 0px;
   padding: 0px 9.5em 0px 9.5em;
