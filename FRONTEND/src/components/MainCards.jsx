@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Routes, Route, useParams, useSearchParams } from 'react-router-dom';
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -25,6 +26,17 @@ const PlantCard = styled.div`
 
 const MainCards = () => {
   const [pokemonData, setPokemonData] = useState([]);
+  const [searchParams, _] = useSearchParams();
+  const [noResults, setNoResults] = useState(false)
+
+ 
+  
+  const searchBy = () => {
+      const filtrado = pokemonData?.filter(el => el.name === params.search)
+      setPokemonData(filtrado)
+  }
+
+
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -52,15 +64,36 @@ const MainCards = () => {
             };
           })
         );
-
-        setPokemonData(detailedPokemonData);
+        console.log(noResults)
+          if(searchParams?.size > 0){
+            console.log(searchParams)
+            const params = {};
+            for(let [key, value] of searchParams.entries()) {
+              params[key] = value
+            }
+            const filtrado = detailedPokemonData?.filter(el => el.name === params.search)
+            console.log(noResults)
+            setNoResults(filtrado.length === 0) 
+            setPokemonData(filtrado)
+            return
+          } else {
+            setPokemonData(detailedPokemonData);
+          }
+        
       } catch (error) {
         console.error("Error fetching Pokemon data:", error);
       }
     };
 
     fetchPokemonData();
-  }, []);
+  }, [searchParams]);
+
+
+if(noResults){
+  return (
+    <div>No hay resultados</div>
+  )
+}
 
   return (
     <MainCardsContainer>
