@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Routes, Route, useParams, useSearchParams } from 'react-router-dom';
 import InfoSvg from "../assets/images/Info.svg";
 import WarningSvg from "../assets/images/Warning.svg";
 import FavSvg from "../assets/images/Fav.svg";
@@ -114,11 +115,11 @@ const P = styled.p`
   padding-top: 10px;
   font-size: 13px;
 `;
-///////////////////////////////////////////////////////////////////////////////////////
+
 const MainCards = () => {
   const [pokemonData, setPokemonData] = useState([]);
-  const [favIcons, setFavIcons] = useState({});
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [searchParams, _] = useSearchParams();
+  const [noResults, setNoResults] = useState(false)
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -158,6 +159,20 @@ const MainCards = () => {
             };
           })
         );
+          if(searchParams?.size > 0){
+            const params = {};
+            for(let [key, value] of searchParams.entries()) {
+              params[key] = value
+            }
+            const exp = new RegExp(`.*${params.search}.*`, 'i')
+            const filtrado = detailedPokemonData?.filter(el => exp.test(el.name))
+            setNoResults(filtrado.length === 0) 
+            setPokemonData(filtrado)
+            return
+          } else {
+            setPokemonData(detailedPokemonData);
+          }
+        
 
         // Actualizar el estado con la información de los Pokémon
         setPokemonData(detailedPokemonData);
@@ -172,7 +187,14 @@ const MainCards = () => {
     };
 
     fetchPokemonData();
-  }, []);
+  }, [searchParams]);
+
+
+if(noResults){
+  return (
+    <div>No hay resultados</div>
+  )
+}
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
