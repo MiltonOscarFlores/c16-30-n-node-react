@@ -206,7 +206,8 @@ const MainCards = () => {
                 style={{
                   margin: 0,
                   fontSize: "20px",
-                  background: "red",
+                  background: "#B5C09C",
+                  borderRadius: "5px",
                 }}
               >
                 🐈‍⬛ 🐕‍🦺 👶
