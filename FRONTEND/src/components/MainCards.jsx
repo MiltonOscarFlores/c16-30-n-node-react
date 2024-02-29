@@ -29,14 +29,6 @@ const MainCards = () => {
   const [searchParams, _] = useSearchParams();
   const [noResults, setNoResults] = useState(false)
 
- 
-  
-  const searchBy = () => {
-      const filtrado = pokemonData?.filter(el => el.name === params.search)
-      setPokemonData(filtrado)
-  }
-
-
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -64,15 +56,13 @@ const MainCards = () => {
             };
           })
         );
-        console.log(noResults)
           if(searchParams?.size > 0){
-            console.log(searchParams)
             const params = {};
             for(let [key, value] of searchParams.entries()) {
               params[key] = value
             }
-            const filtrado = detailedPokemonData?.filter(el => el.name === params.search)
-            console.log(noResults)
+            const exp = new RegExp(`.*${params.search}.*`, 'i')
+            const filtrado = detailedPokemonData?.filter(el => exp.test(el.name))
             setNoResults(filtrado.length === 0) 
             setPokemonData(filtrado)
             return

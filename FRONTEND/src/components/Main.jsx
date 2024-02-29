@@ -119,8 +119,7 @@ const Main = () => {
 
   const search = (e) =>{
     e.preventDefault()
-    // const params = serializeFormQuery(e.target)
-    return setSearchParams({search: inputValue}) 
+    return inputValue ? setSearchParams({search: inputValue}) : setSearchParams({}) 
   }
 
   return (
