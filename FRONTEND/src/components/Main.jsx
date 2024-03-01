@@ -1,7 +1,9 @@
+import { useState } from "react";
 import styled from "styled-components";
 import LogoPlanta from "../assets/images/LogoPlanta.svg";
 import VectorSearch from "../assets/images/VectorSearch.svg";
 import MacetasMain from "../assets/images/MacetasMain.svg";
+import { useSearchParams } from "react-router-dom";
 
 const Wrapper = styled.section`
   @media (min-width: 768px) {
@@ -111,6 +113,15 @@ const MyVectorMacetas = styled.div`
 `;
 
 const Main = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [inputValue, setInputValue] = useState()
+
+
+  const search = (e) =>{
+    e.preventDefault()
+    return inputValue ? setSearchParams({search: inputValue}) : setSearchParams({}) 
+  }
+
   return (
     <Wrapper>
       <ContainerLeft>
@@ -118,8 +129,16 @@ const Main = () => {
         <MyInput
           type="search"
           placeholder="Buscar planta..."
+          onChange={(e) => {
+            setInputValue(e.target.value)}}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+              search(e)
+            }
+            return
+          }}
         />
-        <MyIconSearch>
+        <MyIconSearch onClick={search}>
           <MySpanVector />
         </MyIconSearch>
       </ContainerLeft>
