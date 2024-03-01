@@ -59,6 +59,7 @@ const Myh3 = styled.h3`
   font-size: 16px;
   font-weight: 600;
   color: #464e2e;
+  margin: 0;
 `;
 
 const Modal = styled.div`
@@ -95,20 +96,12 @@ const ModalTitle = styled.h1`
   font-weight: 700;
 `;
 
-const ModalText = styled.p`
-  color: #638763; /* Color personalizado para el texto del modal */
-  padding-top: 10px;
-  border-top: 1px solid #ababab;
-  font-size: 14px;
-  margin-bottom: 10px;
-`;
-
-const ModalColumn = styled.div`
+const ContenedorToxicos = styled.section`
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  outline: 1px solid red;
-  width: 48%; /* Reducimos un poco el ancho para dar espacio entre las columnas */
+  justify-content: center;
+  align-items: end;
+  min-width: 20px;
+  min-height: 40px;
 `;
 
 const P = styled.p`
@@ -118,9 +111,13 @@ const P = styled.p`
 
 const MainCards = () => {
   const [pokemonData, setPokemonData] = useState([]);
+  const [favIcons, setFavIcons] = useState({});
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [warningClicked, setWarningClicked] = useState({});
   const [searchParams, _] = useSearchParams();
   const [noResults, setNoResults] = useState(false)
 
+  
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
@@ -211,6 +208,12 @@ if(noResults){
     setSelectedPokemon(null);
   };
 
+  const handleWarningClick = (pokemonId) => {
+    setWarningClicked((prevWarningClicked) => ({
+      ...prevWarningClicked,
+      [pokemonId]: !prevWarningClicked[pokemonId], // Cambiamos el estado al contrario del valor anterior
+    }));
+  };
   return (
     <MainCardsContainer>
       {pokemonData.map((pokemon) => (
@@ -225,9 +228,24 @@ if(noResults){
             }}
           />
           <Myh3>{pokemon.name}</Myh3>
+          {/* Añade los iconos si se hizo clic en el botón de advertencia */}
+          <ContenedorToxicos>
+            {warningClicked[pokemon.id] && (
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "20px",
+                  background: "#B5C09C",
+                  borderRadius: "5px",
+                }}
+              >
+                🐈‍⬛ 🐕‍🦺 👶
+              </p>
+            )}
+          </ContenedorToxicos>
           <WrapperBtnCards>
             {pokemon.isBaby && (
-              <BtnWarning>
+              <BtnWarning onClick={() => handleWarningClick(pokemon.id)}>
                 <img
                   src={WarningSvg}
                   alt="Warning"
@@ -235,6 +253,8 @@ if(noResults){
                 />
               </BtnWarning>
             )}
+
+            {/* Resto del código para botones Fav e Info */}
             <BtnFav onClick={() => handleFavClick(pokemon.id)}>
               <img
                 src={favIcons[pokemon.id] ? Fav2Svg : FavSvg}
