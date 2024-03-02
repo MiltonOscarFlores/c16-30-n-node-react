@@ -112,97 +112,38 @@ const MainCards = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const fetchPokemonData = async () => {
+    const fetchData = async () => {
+      let params = {}
       try {
-        const response = await fetch(`https://huertafacil-back-dev-szgg.2.us-1.fl0.io/plants/filterBy?page=1&limit=30&clima=${null}&provincia=${null}&tipo_planta=${null}`)
+        //Obtener parámetros de búsqueda si hay
+        if(searchParams?.size > 0) {
+          params = Object.fromEntries(searchParams.entries());
+        }
+        const response = await fetch(`https://huertafacil-back-dev-szgg.2.us-1.fl0.io/plants/filterBy?page=1&limit=30&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
         const obj = await response.json()
         const data = obj.data
-        const withFav = data.map(el =>{
-          el.isFavorite = false
-          return el
-        })
 
-        setPlantData(withFav)
-        console.log(plantData)
+        //Mostrar mensaje "No hay resultados"
+        if(data.length === 0){
+          setNoResults(true)
+        } else {
+          setNoResults(false)
+          // Agregar propiedad isFavorite
+          const withFav = data.map(el =>{
+            el.isFavorite = false
+            return el
+          })
+          setPlantData(withFav)
+        }
         return 
-        // return {
-        //         name: data.nombre,
-        //         id: data.id_especie,
-        //         image: data.img,
-        //         isToxic: data.toxica_para_mascotas,
-        //         isFavorite: false, // Inicialmente asumimos que no es favorito
-        //       }
-      // Filtrar resultados si hay parámetros de búsqueda
-    //     if (searchParams?.size > 0) {
-    //       const params = Object.fromEntries(searchParams.entries());
-    //       const searchExp = new RegExp(`.*${params.search}.*`, "i");
-    //       const filteredData = detailedPokemonData.filter((pokemon) =>
-    //         searchExp.test(pokemon.name)
-    //       );
-
-    //       // Actualizar el estado con los resultados filtrados
-    //       setPokemonData(filteredData);
-    //       setNoResults(filteredData.length === 0);
-    //     } else {
-    //       // Actualizar el estado con la información de todos los Pokémon
-    //       setPokemonData(detailedPokemonData);
-    //       setNoResults(false);
-    //     }
-
-    //     // Actualizar el estado con la información de los Pokémon
-    //     setFavIcons(
-    //       Object.fromEntries(
-    //         detailedPokemonData.map((pokemon) => [pokemon.id, false])
-    //       )
-    //     );
-    //   } catch (error) {
-    //     console.error("Error fetching Pokemon data:", error);
-    //   }
-    // };
+ 
 } catch (err) {
-  console.log(err)
+  console.error("Error fetching data:", err);
   return
-}
-        // const response = await fetch(
-        //   "https://pokeapi.co/api/v2/pokemon?limit=75"
-        // );
-        // if (!response.ok) {
-        //   throw new Error("Network response was not ok");
-        // }
-        // const data = await response.json();
-
-        // // Obtener detalles de cada Pokemon
-        // const detailedPokemonData = await Promise.all(
-        //   data.results.map(async (pokemon) => {
-        //     const detailsResponse = await fetch(pokemon.url);
-        //     if (!detailsResponse.ok) {
-        //       throw new Error("Network response was not ok");
-        //     }
-        //     const detailsData = await detailsResponse.json();
-
-        //     // Hacer una solicitud adicional para obtener información de la cadena de evolución
-        //     const evolutionChainResponse = await fetch(
-        //       `https://pokeapi.co/api/v2/evolution-chain/${detailsData.id}/`
-        //     );
-        //     if (!evolutionChainResponse.ok) {
-        //       throw new Error("Network response was not ok");
-        //     }
-        //     const evolutionChainData = await evolutionChainResponse.json();
-
-        //     return {
-        //       name: pokemon.name,
-        //       id: detailsData.id,
-        //       image: detailsData.sprites.front_default,
-        //       isBaby: evolutionChainData.chain.is_baby,
-        //       isFavorite: false, // Inicialmente asumimos que no es favorito
-        //     };
-        //   })
-        // );
-
-        
+} 
     }
-    fetchPokemonData();
-  }, [searchParams]);
+    fetchData();
+}, [searchParams]);
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
