@@ -67,9 +67,8 @@ const MainFilters = () => {
     <FiltersWrapper>
       <FilterSelect id="provincia">
         <option
-          value=""
+          defaultValue=""
           disabled
-          selected
           hidden
         >
           Provincia
@@ -100,9 +99,8 @@ const MainFilters = () => {
       </FilterSelect>
       <FilterSelect id="clima">
         <option
-          value=""
+          defaultValue=""
           disabled
-          selected
           hidden
         >
           Clima
@@ -112,9 +110,8 @@ const MainFilters = () => {
       </FilterSelect>
       <FilterSelect id="tipoPlanta">
         <option
-          value=""
+          defaultValue=""
           disabled
-          selected
           hidden
         >
           Tipo de Planta
