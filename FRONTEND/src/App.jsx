@@ -8,6 +8,9 @@ import Navbar from "./components/Navbar";
 import MainFilters from "./components/MainFilters";
 import NavbarUser from "./components/NavbarUser";
 import Recordatorios from "./components/Recordatorios";
+import Favoritos from "./components/Favoritos";
+import ConfigUser from "./components/ConfigUser";
+import Exit from "./components/Exit";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -78,6 +81,36 @@ const App = () => {
               <Main />
               <MainFilters />
               <MainCards />
+            </AppContainer>
+          }
+        />
+        <Route
+          path="/favoritos"
+          element={
+            <AppContainer>
+              <GlobalStyle isAuthPage={false} />
+              <NavbarUser />
+              <Favoritos />
+            </AppContainer>
+          }
+        />
+        <Route
+          path="/configuser"
+          element={
+            <AppContainer>
+              <GlobalStyle isAuthPage={false} />
+              <NavbarUser />
+              <ConfigUser />
+            </AppContainer>
+          }
+        />
+        <Route
+          path="/exit"
+          element={
+            <AppContainer>
+              <GlobalStyle isAuthPage={false} />
+              <NavbarUser />
+              <Exit />
             </AppContainer>
           }
         />

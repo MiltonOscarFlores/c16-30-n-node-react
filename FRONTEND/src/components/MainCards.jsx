@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Routes, Route, useParams, useSearchParams } from 'react-router-dom';
 import InfoSvg from "../assets/images/Info.svg";
 import WarningSvg from "../assets/images/Warning.svg";
 import FavSvg from "../assets/images/Fav.svg";
 import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
+import { useSearchParams } from "react-router-dom";
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -64,7 +64,6 @@ const Myh3 = styled.h3`
 
 const Modal = styled.div`
   position: fixed;
-
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -104,20 +103,14 @@ const ContenedorToxicos = styled.section`
   min-height: 40px;
 `;
 
-const P = styled.p`
-  padding-top: 10px;
-  font-size: 13px;
-`;
-
 const MainCards = () => {
   const [pokemonData, setPokemonData] = useState([]);
   const [favIcons, setFavIcons] = useState({});
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [warningClicked, setWarningClicked] = useState({});
-  const [searchParams, _] = useSearchParams();
-  const [noResults, setNoResults] = useState(false)
+  const [noResults, setNoResults] = useState(false);
+  const [searchParams] = useSearchParams();
 
-  
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
@@ -156,23 +149,25 @@ const MainCards = () => {
             };
           })
         );
-          if(searchParams?.size > 0){
-            const params = {};
-            for(let [key, value] of searchParams.entries()) {
-              params[key] = value
-            }
-            const exp = new RegExp(`.*${params.search}.*`, 'i')
-            const filtrado = detailedPokemonData?.filter(el => exp.test(el.name))
-            setNoResults(filtrado.length === 0) 
-            setPokemonData(filtrado)
-            return
-          } else {
-            setPokemonData(detailedPokemonData);
-          }
-        
+
+        // Filtrar resultados si hay parámetros de búsqueda
+        if (searchParams?.size > 0) {
+          const params = Object.fromEntries(searchParams.entries());
+          const searchExp = new RegExp(`.*${params.search}.*`, "i");
+          const filteredData = detailedPokemonData.filter((pokemon) =>
+            searchExp.test(pokemon.name)
+          );
+
+          // Actualizar el estado con los resultados filtrados
+          setPokemonData(filteredData);
+          setNoResults(filteredData.length === 0);
+        } else {
+          // Actualizar el estado con la información de todos los Pokémon
+          setPokemonData(detailedPokemonData);
+          setNoResults(false);
+        }
 
         // Actualizar el estado con la información de los Pokémon
-        setPokemonData(detailedPokemonData);
         setFavIcons(
           Object.fromEntries(
             detailedPokemonData.map((pokemon) => [pokemon.id, false])
@@ -185,13 +180,6 @@ const MainCards = () => {
 
     fetchPokemonData();
   }, [searchParams]);
-
-
-if(noResults){
-  return (
-    <div>No hay resultados</div>
-  )
-}
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
@@ -211,67 +199,69 @@ if(noResults){
   const handleWarningClick = (pokemonId) => {
     setWarningClicked((prevWarningClicked) => ({
       ...prevWarningClicked,
-      [pokemonId]: !prevWarningClicked[pokemonId], // Cambiamos el estado al contrario del valor anterior
+      [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
+
   return (
     <MainCardsContainer>
-      {pokemonData.map((pokemon) => (
-        <PlantCard key={pokemon.id}>
-          <img
-            src={pokemon.image}
-            alt={pokemon.name}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "120px",
-              marginBottom: "8px",
-            }}
-          />
-          <Myh3>{pokemon.name}</Myh3>
-          {/* Añade los iconos si se hizo clic en el botón de advertencia */}
-          <ContenedorToxicos>
-            {warningClicked[pokemon.id] && (
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: "20px",
-                  background: "#B5C09C",
-                  borderRadius: "5px",
-                }}
-              >
-                🐈‍⬛ 🐕‍🦺 👶
-              </p>
-            )}
-          </ContenedorToxicos>
-          <WrapperBtnCards>
-            {pokemon.isBaby && (
-              <BtnWarning onClick={() => handleWarningClick(pokemon.id)}>
+      {noResults ? (
+        <div>No hay resultados</div>
+      ) : (
+        pokemonData.map((pokemon) => (
+          <PlantCard key={pokemon.id}>
+            <img
+              src={pokemon.image}
+              alt={pokemon.name}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "120px",
+                marginBottom: "8px",
+              }}
+            />
+            <Myh3>{pokemon.name}</Myh3>
+            <ContenedorToxicos>
+              {warningClicked[pokemon.id] && (
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "20px",
+                    background: "#B5C09C",
+                    borderRadius: "5px",
+                  }}
+                >
+                  🐈‍⬛ 🐕‍🦺 👶
+                </p>
+              )}
+            </ContenedorToxicos>
+            <WrapperBtnCards>
+              {pokemon.isBaby && (
+                <BtnWarning onClick={() => handleWarningClick(pokemon.id)}>
+                  <img
+                    src={WarningSvg}
+                    alt="Warning"
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </BtnWarning>
+              )}
+              <BtnFav onClick={() => handleFavClick(pokemon.id)}>
                 <img
-                  src={WarningSvg}
-                  alt="Warning"
+                  src={favIcons[pokemon.id] ? Fav2Svg : FavSvg}
+                  alt="Favorite"
                   style={{ width: "20px", height: "20px" }}
                 />
-              </BtnWarning>
-            )}
-
-            {/* Resto del código para botones Fav e Info */}
-            <BtnFav onClick={() => handleFavClick(pokemon.id)}>
-              <img
-                src={favIcons[pokemon.id] ? Fav2Svg : FavSvg}
-                alt="Favorite"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </BtnFav>
-            <BtnInfo onClick={() => handleInfoClick(pokemon)}>
-              <img
-                src={InfoSvg}
-                alt="Info"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </BtnInfo>
-          </WrapperBtnCards>
-        </PlantCard>
-      ))}
+              </BtnFav>
+              <BtnInfo onClick={() => handleInfoClick(pokemon)}>
+                <img
+                  src={InfoSvg}
+                  alt="Info"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </BtnInfo>
+            </WrapperBtnCards>
+          </PlantCard>
+        ))
+      )}
 
       {/* Modal */}
       {selectedPokemon && (
@@ -288,7 +278,6 @@ if(noResults){
               &times;
             </button>
             <ModalTitle>Información de {selectedPokemon.name}</ModalTitle>
-
             <InfoPlanta />
           </Modal>
         </>

@@ -21,9 +21,23 @@ const Logo = styled.img`
   cursor: pointer;
 `;
 
-const NavBtnIngresar = styled.button`
+const NavBtnFavoritos = styled.button`
   background: transparent;
-  color: black;
+  color: #464e2e;
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  padding: 3px 20px;
+  height: 30px;
+
+  &:active {
+    transform: translateY(1px);
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+  }
+`;
+const NavBtnRecordatorios = styled.button`
+  background: transparent;
+  color: #424242;
+
   font-family: "Poppins", sans-serif;
   font-size: 20px;
   padding: 3px 20px;
@@ -60,10 +74,10 @@ const NavbarUser = () => {
       </Link>
       <div>
         <Link to="/favoritos">
-          <NavBtnIngresar>Favoritos</NavBtnIngresar>
+          <NavBtnFavoritos>Favoritos</NavBtnFavoritos>
         </Link>
         <Link to="/recordatorios">
-          <NavBtnIngresar>Recordatorios</NavBtnIngresar>
+          <NavBtnRecordatorios>Recordatorios</NavBtnRecordatorios>
         </Link>
         <Link to="/configuser">
           <BtnConfig>

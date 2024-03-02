@@ -113,14 +113,15 @@ const MyVectorMacetas = styled.div`
 `;
 
 const Main = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [inputValue, setInputValue] = useState()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [inputValue, setInputValue] = useState();
 
-
-  const search = (e) =>{
-    e.preventDefault()
-    return inputValue ? setSearchParams({search: inputValue}) : setSearchParams({}) 
-  }
+  const search = (e) => {
+    e.preventDefault();
+    return inputValue
+      ? setSearchParams({ search: inputValue })
+      : setSearchParams({});
+  };
 
   return (
     <Wrapper>
@@ -130,12 +131,13 @@ const Main = () => {
           type="search"
           placeholder="Buscar planta..."
           onChange={(e) => {
-            setInputValue(e.target.value)}}
+            setInputValue(e.target.value);
+          }}
           onKeyDown={(e) => {
-            if(e.key === 'Enter'){
-              search(e)
+            if (e.key === "Enter") {
+              search(e);
             }
-            return
+            return;
           }}
         />
         <MyIconSearch onClick={search}>

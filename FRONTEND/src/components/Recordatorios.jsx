@@ -29,13 +29,12 @@ const Myh1 = styled.h1`
   width: 960px;
   font-size: 2rem;
   font-weight: 800;
-  outline: 1px solid red;
+  color: #424242;
 `;
 
 const WrapperBotones = styled.section`
   display: flex;
   width: 960px;
-  outline: 1px solid red;
   gap: 2rem;
 `;
 
@@ -56,24 +55,20 @@ const Myh2 = styled.h2`
   width: 960px;
   font-size: 1.3rem;
   font-weight: 700;
-  outline: 1px solid red;
 `;
 
 const ListWrapper = styled.article`
   display: flex;
   flex-direction: column;
   width: 960px;
-  outline: 1px solid red;
 `;
 
 const WrapperCorazones = styled.section`
   width: 60px;
-  outline: 1px solid blue;
 `;
 
 const WrapperTexto = styled.article`
   width: 900px;
-  outline: 1px solid red;
 `;
 
 ////////////////////////////////////////////////////////////////////////
