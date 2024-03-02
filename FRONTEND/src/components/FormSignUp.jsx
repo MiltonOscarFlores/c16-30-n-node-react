@@ -109,9 +109,8 @@ const Form = () => {
         />
         <MySelect id="provincia">
           <option
-            value=""
+            defaultValue=""
             disabled
-            selected
             hidden
           >
             Provincia
