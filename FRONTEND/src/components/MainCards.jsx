@@ -119,7 +119,7 @@ const MainCards = () => {
         if(searchParams?.size > 0) {
           params = Object.fromEntries(searchParams.entries());
         }
-        const response = await fetch(`https://huertafacil-back-dev-szgg.2.us-1.fl0.io/plants/filterBy?page=1&limit=30&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/filterBy?page=1&limit=30&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
         const obj = await response.json()
         const data = obj.data
 
