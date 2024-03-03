@@ -5,7 +5,8 @@ import WarningSvg from "../assets/images/Warning.svg";
 import FavSvg from "../assets/images/Fav.svg";
 import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -110,41 +111,47 @@ const MainCards = () => {
   const [warningClicked, setWarningClicked] = useState({});
   const [noResults, setNoResults] = useState(false);
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate()
+
+  const fetchData = async (page = 1) => {
+    let params = {}
+    try {
+      //Obtener parámetros de búsqueda si hay
+      if (searchParams?.size > 0) {
+        params = Object.fromEntries(searchParams.entries());
+      }
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/filterBy?page=${page}&limit=20&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
+      const obj = await response.json()
+      const data = obj.data
+
+      //Mostrar mensaje "No hay resultados"
+      if (data.length === 0) {
+        setNoResults(true)
+      } else {
+        setNoResults(false)
+        // Agregar propiedad isFavorite
+        const withFav = data.map(el => {
+          el.isFavorite = false
+          return el
+        })
+        setPlantData(withFav)
+      }
+      return
+
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      return
+    }
+  }
+
+ const {isLoading, isError, data } =  useQuery(
+  { key: ['plants'],
+    fn: async () => await fetchData(1)
+  }
+  )
 
   useEffect(() => {
-    const fetchData = async () => {
-      let params = {}
-      try {
-        //Obtener parámetros de búsqueda si hay
-        if(searchParams?.size > 0) {
-          params = Object.fromEntries(searchParams.entries());
-        }
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/filterBy?page=1&limit=30&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
-        const obj = await response.json()
-        const data = obj.data
-
-        //Mostrar mensaje "No hay resultados"
-        if(data.length === 0){
-          setNoResults(true)
-        } else {
-          setNoResults(false)
-          // Agregar propiedad isFavorite
-          const withFav = data.map(el =>{
-            el.isFavorite = false
-            return el
-          })
-          setPlantData(withFav)
-        }
-        return 
- 
-} catch (err) {
-  console.error("Error fetching data:", err);
-  return
-} 
-    }
     fetchData();
-}, [searchParams]);
+  }, [searchParams]);
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
@@ -176,7 +183,7 @@ const MainCards = () => {
         plantData.map((plant) => (
           <PlantCard key={plant.id_especie}>
             <img
-            src={`${import.meta.env.VITE_SERVER_URL}src/assets/plants_thumb/${plant.img}`}
+              src={`${import.meta.env.VITE_SERVER_URL}src/assets/plants_thumb/${plant.img}`}
               alt={plant.nombre}
               style={{
                 maxWidth: "100%",
@@ -228,6 +235,11 @@ const MainCards = () => {
         ))
       )}
 
+      {isLoading && <button> Cargando</button> }
+
+      {isError && <span> Error al cargar los datos</span> }
+
+
       {/* Modal */}
       {!!selectedPlant && (
         <>
@@ -235,7 +247,7 @@ const MainCards = () => {
             show={!!selectedPlant}
             onClick={closeModal}
           />
-          <Modal show={!!selectedPlant}>
+          <Modal show={selectedPlant != null}>
             <button
               className="close-modal"
               onClick={closeModal}
