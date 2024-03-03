@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import {useState, useEffect} from 'react'
+import { useSearchParams } from "react-router-dom";
 
 const FiltersWrapper = styled.div`
   display: flex;
@@ -63,65 +65,121 @@ const ClearButton = styled.button`
 `;
 /////////////////////////////////////////////////////////////
 const MainFilters = () => {
+  const [provinces, setProvinces] = useState([])
+  const [climates, setClimates] = useState([])
+  const [plantTypes, setPlantTypes] = useState([])
+  const [provinceFilter, setProvinceFilter] = useState('')
+  const [climateFilter, setClimateFilter] = useState('')
+  const [plantTypeFilter, setPlantTypeFilter] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [queryParams, setQueryParams] = useState({})
+
+  const  getFilters = async () =>{
+    try {
+      const request = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/getSelectors`)
+      const {data} = await request.json()
+
+      //Convertir a objeto con objetos para acceder a cada propiedad
+      const reduced = data.reduce((acc, curr,i) => {
+        const key = Object.keys(curr)[0]
+        if(!acc.hasOwnProperty(key)){
+          acc[key] = curr[key]
+        }
+        return acc
+      },{})
+      
+      setProvinces(reduced.provincias)
+      setClimates(reduced.climas)
+      setPlantTypes(reduced.tipos_planta)
+
+    } catch (error) {
+      console.log('Error: Unable to get filter values ', error)
+    }
+  }
+
+  const getParams = () => {  
+    return Object.fromEntries(searchParams.entries())
+  }
+  
+  const applyFilters = (e) => {
+    const params = getParams()
+    e.preventDefault()
+    if(climateFilter){
+      params.clima = climateFilter
+    }
+    if(provinceFilter){
+      params.provincia = provinceFilter
+    }
+    if(plantTypeFilter){
+      params.tipo_planta = plantTypeFilter
+    }
+    setSearchParams(params)
+    return
+  }
+
+  const cleanFilters = (e) => {
+    const params = getParams()
+    e.preventDefault()
+    delete params.clima
+    delete params.provincia
+    delete params.tipo_planta
+    setSearchParams(params)
+    return
+  }
+
+  useEffect(()=> {
+  getFilters()
+  setQueryParams(getParams())
+  },[])
   return (
     <FiltersWrapper>
-      <FilterSelect id="provincia">
+      <FilterSelect id="provincia"
+      onChange={(e) => setProvinceFilter(e.target.value)}
+      defaultValue={queryParams.provincia || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
           Provincia
         </option>
-        <option value="buenosaires">Buenos Aires</option>
-        <option value="catamarca">Catamarca</option>
-        <option value="chaco">Chaco</option>
-        <option value="chubut">Chubut</option>
-        <option value="cordoba">Córdoba</option>
-        <option value="corrientes">Corrientes</option>
-        <option value="entrerios">Entre Ríos</option>
-        <option value="formosa">Formosa</option>
-        <option value="jujuy">Jujuy</option>
-        <option value="lapampa">La Pampa</option>
-        <option value="larioja">La Rioja</option>
-        <option value="mendoza">Mendoza</option>
-        <option value="misiones">Misiones</option>
-        <option value="neuquen">Neuquén</option>
-        <option value="rionegro">Río Negro</option>
-        <option value="salta">Salta</option>
-        <option value="sanjuan">San Juan</option>
-        <option value="sanluis">San Luis</option>
-        <option value="santacruz">Santa Cruz</option>
-        <option value="santafe">Santa Fe</option>
-        <option value="santiago">Santiago del Estero</option>
-        <option value="tierradelfuego">Tierra del Fuego</option>
-        <option value="tucuman">Tucumán</option>
+        {provinces.map(el => {
+          return <option key={el.id_provincia} value={el.provincia}>{el.provincia}</option>
+        })}
       </FilterSelect>
-      <FilterSelect id="clima">
+      <FilterSelect id="clima"
+      onChange={(e) => setClimateFilter(e.target.value)}
+      defaultValue={queryParams.clima || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
           Clima
         </option>
-        <option value="humedo">Humedo</option>
-        <option value="templado">Templado</option>
+        {climates.map(el => {
+          return <option key={el.id_clima} value={el.clima}>{el.clima}</option>
+        })}
       </FilterSelect>
-      <FilterSelect id="tipoPlanta">
+      <FilterSelect id="tipoPlanta"
+      onChange={(e) => setPlantTypeFilter(e.target.value)}
+      defaultValue={queryParams.tipo_planta || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
           Tipo de Planta
         </option>
-        <option value="tallo">Tallo</option>
-        <option value="trepadora">Trepadora</option>
-        <option value="hoja">Hoja</option>
+        {plantTypes.map(el => {
+          return <option key={el.id_tipo_planta} value={el.tipo_planta}>{el.tipo_planta}</option>
+        })}
       </FilterSelect>
-      <ApplyButton>Aplicar Filtros</ApplyButton>
-      <ClearButton>Borrar Filtros</ClearButton>
+      <ApplyButton onClick={applyFilters}>Aplicar Filtros</ApplyButton>
+      <ClearButton onClick={cleanFilters}>Borrar Filtros</ClearButton>
     </FiltersWrapper>
   );
 };
