@@ -5,7 +5,7 @@ import WarningSvg from "../assets/images/Warning.svg";
 import FavSvg from "../assets/images/Fav.svg";
 import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -106,10 +106,11 @@ const ContenedorToxicos = styled.section`
 const MainCards = () => {
   const [plantData, setPlantData] = useState([]);
   const [favIcons, setFavIcons] = useState({});
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedPlant, setSelectedPlant] = useState(null);
   const [warningClicked, setWarningClicked] = useState({});
   const [noResults, setNoResults] = useState(false);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -152,12 +153,12 @@ const MainCards = () => {
     }));
   };
 
-  const handleInfoClick = (pokemon) => {
-    setSelectedPokemon(pokemon);
+  const handleInfoClick = (plant) => {
+    setSelectedPlant(plant);
   };
 
   const closeModal = () => {
-    setSelectedPokemon(null);
+    setSelectedPlant(null);
   };
 
   const handleWarningClick = (pokemonId) => {
@@ -228,21 +229,21 @@ const MainCards = () => {
       )}
 
       {/* Modal */}
-      {selectedPokemon && (
+      {!!selectedPlant && (
         <>
           <Overlay
-            show={!!selectedPokemon}
+            show={!!selectedPlant}
             onClick={closeModal}
           />
-          <Modal show={!!selectedPokemon}>
+          <Modal show={!!selectedPlant}>
             <button
               className="close-modal"
               onClick={closeModal}
             >
               &times;
             </button>
-            <ModalTitle>Información de {selectedPokemon.name}</ModalTitle>
-            <InfoPlanta />
+            <ModalTitle>Información de {selectedPlant.nombre}</ModalTitle>
+            <InfoPlanta idPlanta={selectedPlant.id_especie} />
           </Modal>
         </>
       )}

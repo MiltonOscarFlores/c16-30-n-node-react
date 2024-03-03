@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
 
 const ContenedorInfo = styled.div`
   display: flex;
@@ -14,11 +15,26 @@ const Articulo = styled.div`
   outline: 1px solid green;
 `;
 
-const InfoPlanta = () => {
+
+
+const InfoPlanta = ({ idPlanta }) => {
+  const [plant, setPlant] = useState({})
+
+  const getPlantInfo = async () => {
+    const request = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/getPlantById/${idPlanta}`)
+    const data = await request.json()
+    setPlant(data.data[0])
+  }
+
+  useEffect(() => {
+    getPlantInfo()
+  }, [])
+
+  
   return (
     <ContenedorInfo>
       <Columna>
-        <Articulo>1. Contenido del artículo 1</Articulo>
+        <Articulo>{plant.nombre_cientifico}</Articulo>
         <Articulo>2. Contenido del artículo 2</Articulo>
         <Articulo>3. Contenido del artículo 3</Articulo>
         <Articulo>4. Contenido del artículo 4</Articulo>
