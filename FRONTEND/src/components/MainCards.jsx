@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import InfoSvg from "../assets/images/Info.svg";
 import WarningSvg from "../assets/images/Warning.svg";
@@ -6,7 +6,7 @@ import FavSvg from "../assets/images/Fav.svg";
 import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -121,19 +121,24 @@ const MainCards = () => {
       }
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/filterBy?page=${page}&limit=20&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
       const obj = await response.json()
-      const data = obj.data
+      // const data = obj.data
 
       //Mostrar mensaje "No hay resultados"
-      if (data.length === 0) {
+      if (obj.data.length === 0) {
         setNoResults(true)
       } else {
         setNoResults(false)
+        setPlantData(obj.data)
+        return {
+          plants: obj.data,
+          pagination: obj.pagination
+        }
         // Agregar propiedad isFavorite
-        const withFav = data.map(el => {
-          el.isFavorite = false
-          return el
-        })
-        setPlantData(withFav)
+        // const withFav = data.map(el => {
+        //   el.isFavorite = false
+        //   return el
+        // })
+        // setPlantData(withFav)
       }
       return
 
@@ -142,16 +147,31 @@ const MainCards = () => {
       return
     }
   }
-
- const {isLoading, isError, data } =  useQuery(
-  { key: ['plants'],
-    fn: async () => await fetchData(1)
+// quitar estado plantsData y reemplazar por data: plantsData
+  const {isLoading, isError, data = {}, isFetching, fetchNextPage, hasNextPage, refetch, error} =  useInfiniteQuery(
+  { queryKey: ['plants'],
+    queryFn: async ({pageParam}) =>{
+      const res =  await fetchData(pageParam)
+      return res
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if(!lastPage){
+        return undefined
+      }
+      return lastPage?.pagination?.next_page || undefined},
+    getNoResultsPage: (pages) => {
+      return pages[0].pagination.total === 0 ? [{noResults: true}] : []
+    }
   }
   )
 
   useEffect(() => {
     fetchData();
+    refetch()
   }, [searchParams]);
+
+  console.log(data)
+  const plants =  Object.entries(data).length === 0 || data.pages[0] === undefined ?  [] : data?.pages?.flatMap(el => el.plants)
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
@@ -174,13 +194,19 @@ const MainCards = () => {
       [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
-
+  
   return (
     <MainCardsContainer>
-      {noResults ? (
+      { isLoading ? (
+      <div>Cargando...</div>
+      ) : isError ? (<span>Error al cargar los datos</span>
+      ) : (
+      
+      <>
+      { plants.length === 0 ? (
         <div>No hay resultados</div>
       ) : (
-        plantData.map((plant) => (
+        plants?.map((plant) => (
           <PlantCard key={plant.id_especie}>
             <img
               src={`${import.meta.env.VITE_SERVER_URL}src/assets/plants_thumb/${plant.img}`}
@@ -234,11 +260,10 @@ const MainCards = () => {
           </PlantCard>
         ))
       )}
+      </>
+      )}
 
-      {isLoading && <button> Cargando</button> }
-
-      {isError && <span> Error al cargar los datos</span> }
-
+      {hasNextPage && <button onClick={() => fetchNextPage()}>Mostrar más</button>}
 
       {/* Modal */}
       {!!selectedPlant && (
