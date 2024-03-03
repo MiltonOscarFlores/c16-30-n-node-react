@@ -68,6 +68,11 @@ const MainFilters = () => {
   const [provinces, setProvinces] = useState([])
   const [climates, setClimates] = useState([])
   const [plantTypes, setPlantTypes] = useState([])
+  const [provinceFilter, setProvinceFilter] = useState('')
+  const [climateFilter, setClimateFilter] = useState('')
+  const [plantTypeFilter, setPlantTypeFilter] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [queryParams, setQueryParams] = useState({})
 
   const  getFilters = async () =>{
     try {
@@ -91,17 +96,49 @@ const MainFilters = () => {
       console.log('Error: Unable to get filter values ', error)
     }
   }
+
+  const getParams = () => {  
+    return Object.fromEntries(searchParams.entries())
+  }
   
+  const applyFilters = (e) => {
+    const params = getParams()
+    e.preventDefault()
+    if(climateFilter){
+      params.clima = climateFilter
+    }
+    if(provinceFilter){
+      params.provincia = provinceFilter
+    }
+    if(plantTypeFilter){
+      params.tipo_planta = plantTypeFilter
+    }
+    setSearchParams(params)
+    return
+  }
+
+  const cleanFilters = (e) => {
+    const params = getParams()
+    e.preventDefault()
+    delete params.clima
+    delete params.provincia
+    delete params.tipo_planta
+    setSearchParams(params)
+    return
+  }
 
   useEffect(()=> {
   getFilters()
-
+  setQueryParams(getParams())
   },[])
   return (
     <FiltersWrapper>
-      <FilterSelect id="provincia">
+      <FilterSelect id="provincia"
+      onChange={(e) => setProvinceFilter(e.target.value)}
+      defaultValue={queryParams.provincia || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
@@ -111,9 +148,12 @@ const MainFilters = () => {
           return <option key={el.id_provincia} value={el.provincia}>{el.provincia}</option>
         })}
       </FilterSelect>
-      <FilterSelect id="clima">
+      <FilterSelect id="clima"
+      onChange={(e) => setClimateFilter(e.target.value)}
+      defaultValue={queryParams.clima || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
@@ -123,9 +163,12 @@ const MainFilters = () => {
           return <option key={el.id_clima} value={el.clima}>{el.clima}</option>
         })}
       </FilterSelect>
-      <FilterSelect id="tipoPlanta">
+      <FilterSelect id="tipoPlanta"
+      onChange={(e) => setPlantTypeFilter(e.target.value)}
+      defaultValue={queryParams.tipo_planta || ""}
+      >
         <option
-          defaultValue=""
+          value=""
           disabled
           hidden
         >
@@ -135,8 +178,8 @@ const MainFilters = () => {
           return <option key={el.id_tipo_planta} value={el.tipo_planta}>{el.tipo_planta}</option>
         })}
       </FilterSelect>
-      <ApplyButton>Aplicar Filtros</ApplyButton>
-      <ClearButton>Borrar Filtros</ClearButton>
+      <ApplyButton onClick={applyFilters}>Aplicar Filtros</ApplyButton>
+      <ClearButton onClick={cleanFilters}>Borrar Filtros</ClearButton>
     </FiltersWrapper>
   );
 };

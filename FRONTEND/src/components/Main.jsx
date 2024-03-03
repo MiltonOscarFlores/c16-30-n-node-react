@@ -118,9 +118,16 @@ const Main = () => {
 
   const search = (e) => {
     e.preventDefault();
-    return inputValue
-      ? setSearchParams({ search: inputValue })
-      : setSearchParams({});
+    const params = Object.fromEntries(searchParams.entries())
+
+    if(inputValue){
+      params.search = inputValue
+    }
+    if(params.search && !inputValue){
+      delete params.search
+    }
+    setSearchParams(params)
+    return 
   };
 
   return (
