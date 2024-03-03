@@ -175,7 +175,7 @@ const MainCards = () => {
         plantData.map((plant) => (
           <PlantCard key={plant.id_especie}>
             <img
-              src={plant.img}
+            src={`${import.meta.env.VITE_SERVER_URL}src/assets/plants_thumb/${plant.img}`}
               alt={plant.nombre}
               style={{
                 maxWidth: "100%",
