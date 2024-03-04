@@ -91,7 +91,7 @@ const MainFilters = () => {
       setProvinces(reduced.provincias)
       setClimates(reduced.climas)
       setPlantTypes(reduced.tipos_planta)
-
+      
     } catch (error) {
       console.log('Error: Unable to get filter values ', error)
     }
@@ -104,13 +104,13 @@ const MainFilters = () => {
   const applyFilters = (e) => {
     const params = getParams()
     e.preventDefault()
-    if(climateFilter){
+    if(climateFilter && climateFilter !== "clima"){
       params.clima = climateFilter
     }
-    if(provinceFilter){
+    if(provinceFilter && provinceFilter !== "provincia"){
       params.provincia = provinceFilter
     }
-    if(plantTypeFilter){
+    if(plantTypeFilter && plantTypeFilter !== "tipoPlanta"){
       params.tipo_planta = plantTypeFilter
     }
     setSearchParams(params)
@@ -124,23 +124,26 @@ const MainFilters = () => {
     delete params.provincia
     delete params.tipo_planta
     setSearchParams(params)
+    setClimateFilter('clima')
+    setProvinceFilter('provincia')
+    setPlantTypeFilter('tipoPlanta')
     return
   }
+
+  console.log(queryParams)
 
   useEffect(()=> {
   getFilters()
   setQueryParams(getParams())
-  },[])
+  },[searchParams])
   return (
     <FiltersWrapper>
       <FilterSelect id="provincia"
       onChange={(e) => setProvinceFilter(e.target.value)}
-      defaultValue={queryParams.provincia || ""}
+      value={provinceFilter}
       >
         <option
-          value=""
-          disabled
-          hidden
+          value="provincia"
         >
           Provincia
         </option>
@@ -150,12 +153,10 @@ const MainFilters = () => {
       </FilterSelect>
       <FilterSelect id="clima"
       onChange={(e) => setClimateFilter(e.target.value)}
-      defaultValue={queryParams.clima || ""}
+      value={climateFilter || "clima"}
       >
         <option
-          value=""
-          disabled
-          hidden
+          value="clima"
         >
           Clima
         </option>
@@ -165,10 +166,10 @@ const MainFilters = () => {
       </FilterSelect>
       <FilterSelect id="tipoPlanta"
       onChange={(e) => setPlantTypeFilter(e.target.value)}
-      defaultValue={queryParams.tipo_planta || ""}
+      value={plantTypeFilter || "tipoPlanta"}
       >
         <option
-          value=""
+          value="tipoPlanta"
           disabled
           hidden
         >

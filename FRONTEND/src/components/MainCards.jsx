@@ -170,7 +170,6 @@ const MainCards = () => {
     refetch()
   }, [searchParams]);
 
-  console.log(data)
   const plants =  Object.entries(data).length === 0 || data.pages[0] === undefined ?  [] : data?.pages?.flatMap(el => el.plants)
 
   const handleFavClick = (pokemonId) => {
