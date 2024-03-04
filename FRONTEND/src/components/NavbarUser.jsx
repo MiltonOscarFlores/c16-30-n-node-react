@@ -5,6 +5,7 @@ import ExitSvg from "../assets/images/Exit.svg";
 import { Link, useNavigate} from "react-router-dom";
 import MyContext from '../context/MyContext'
 import { useContext, useState } from 'react'
+import  Cookies  from 'universal-cookie';
 
 const MyNavbar = styled.div`
   background-color: #e9e5d6;
@@ -71,23 +72,23 @@ const NavbarUser = () => {
   const navigate = useNavigate()
   const [exit, setExit] = useState(false)
 
+
   const logout = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/logout`)
-      const data = await response.json()
-      console.log(data.data[0].message)
-      if(data.data[0].status === 200){
-        setMyData({})
-        navigate('/')
+
+      const response = await fetch(`${import.meta.env.VITE_BACK_URL}/user/logout`, {
+        credentials: 'include' 
+      });
+      const data = await response.json();
+      if (data.data[0].status === 200) {
+        setMyData({});
+        navigate('/');
       }
     } catch (error) {
-      console.log('Error al salir de la sesión: ', error)
+      console.log('Error al salir de la sesión: ', error);
     }
-  }
+  };
 
-  const confirmLogout = () => {
-
-  }
 
   return (
     <MyNavbar>

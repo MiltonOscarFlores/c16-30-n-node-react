@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.1",
     "styled-components": "^6.1.8",
+    "universal-cookie": "^7.1.0",
     "vercel": "^33.5.1"
   },
   "devDependencies": {

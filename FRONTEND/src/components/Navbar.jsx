@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import LogoImage from "../assets/images/Logo.svg";
 import { Link } from "react-router-dom";
+import { useContext } from 'react'
+import MyContext from '../context/MyContext'
+import NavbarUser from "./NavbarUser";
 
 const MyNavbar = styled.div`
   background-color: #e9e5d6;
@@ -39,6 +42,15 @@ const NavBtnIngresar = styled.button`
 `;
 
 const Navbar = () => {
+  const {myData, setMyData} = useContext(MyContext)
+
+
+  if(myData.usuario) {
+    return (
+      <NavbarUser/>
+    )
+  }
+
   return (
     <MyNavbar>
       <Link to="/">

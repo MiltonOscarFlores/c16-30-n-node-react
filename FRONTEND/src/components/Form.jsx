@@ -126,6 +126,7 @@ const Form = () => {
       const data = await results.json()
       setMyData(data.data.attributes.user)
       setResultData(data)
+      navigate('/');
       return 
     } catch (error) {
       console.log("Error de solicitud: ", error)
