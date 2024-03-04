@@ -2,7 +2,9 @@ import styled from "styled-components";
 import LogoImage from "../assets/images/Logo.svg";
 import ConfigSvg from "../assets/images/Config.svg";
 import ExitSvg from "../assets/images/Exit.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+import MyContext from '../context/MyContext'
+import { useContext, useState } from 'react'
 
 const MyNavbar = styled.div`
   background-color: #e9e5d6;
@@ -64,6 +66,29 @@ const BtnExit = styled.button`
 ///////////////////////////////////////////////////////
 
 const NavbarUser = () => {
+
+  const {myData, setMyData} = useContext(MyContext)
+  const navigate = useNavigate()
+  const [exit, setExit] = useState(false)
+
+  const logout = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/logout`)
+      const data = await response.json()
+      console.log(data.data[0].message)
+      if(data.data[0].status === 200){
+        setMyData({})
+        navigate('/')
+      }
+    } catch (error) {
+      console.log('Error al salir de la sesión: ', error)
+    }
+  }
+
+  const confirmLogout = () => {
+
+  }
+
   return (
     <MyNavbar>
       <Link to="/">
@@ -88,15 +113,13 @@ const NavbarUser = () => {
             />
           </BtnConfig>
         </Link>
-        <Link to="/exit">
-          <BtnExit>
+          <BtnExit onClick={() => logout()}>
             <img
               src={ExitSvg}
               alt="Boton Salir"
               style={{ width: "16px", height: "16px" }}
             />
           </BtnExit>
-        </Link>
       </div>
     </MyNavbar>
   );
