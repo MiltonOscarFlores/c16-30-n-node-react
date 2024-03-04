@@ -105,11 +105,9 @@ const ContenedorToxicos = styled.section`
 `;
 
 const MainCards = () => {
-  const [plantData, setPlantData] = useState([]);
   const [favIcons, setFavIcons] = useState({});
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [warningClicked, setWarningClicked] = useState({});
-  const [noResults, setNoResults] = useState(false);
   const [searchParams] = useSearchParams();
 
   const fetchData = async (page = 1) => {
@@ -121,27 +119,10 @@ const MainCards = () => {
       }
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/plants/filterBy?page=${page}&limit=20&clima=${params.clima || ''}&provincia=${params.provincia || ''}&tipo_planta=${params.tipo_planta || ''}&nombre=${params.search || ''}`)
       const obj = await response.json()
-      // const data = obj.data
-
-      //Mostrar mensaje "No hay resultados"
-      if (obj.data.length === 0) {
-        setNoResults(true)
-      } else {
-        setNoResults(false)
-        setPlantData(obj.data)
-        return {
-          plants: obj.data,
-          pagination: obj.pagination
-        }
-        // Agregar propiedad isFavorite
-        // const withFav = data.map(el => {
-        //   el.isFavorite = false
-        //   return el
-        // })
-        // setPlantData(withFav)
+      return {
+        plants: obj.data,
+        pagination: obj.pagination
       }
-      return
-
     } catch (err) {
       console.error("Error fetching data:", err);
       return
