@@ -158,10 +158,7 @@ const MainCards = () => {
       if(!lastPage){
         return undefined
       }
-      return lastPage?.pagination?.next_page || undefined},
-    getNoResultsPage: (pages) => {
-      return pages[0].pagination.total === 0 ? [{noResults: true}] : []
-    }
+      return lastPage?.pagination?.next_page || undefined}
   }
   )
 
@@ -193,7 +190,7 @@ const MainCards = () => {
       [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
-  
+  console.log(plants)
   return (
     <MainCardsContainer>
       { isLoading ? (
@@ -263,6 +260,8 @@ const MainCards = () => {
       )}
 
       {hasNextPage && <button onClick={() => fetchNextPage()}>Mostrar más</button>}
+
+      {!hasNextPage && !isError &&<span>No hay más resultados</span>}
 
       {/* Modal */}
       {!!selectedPlant && (

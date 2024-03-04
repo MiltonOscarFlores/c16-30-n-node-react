@@ -130,7 +130,6 @@ const MainFilters = () => {
     return
   }
 
-  console.log(queryParams)
 
   useEffect(()=> {
   getFilters()
