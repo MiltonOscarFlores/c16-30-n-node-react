@@ -11,6 +11,7 @@ import Recordatorios from "./components/Recordatorios";
 import Favoritos from "./components/Favoritos";
 import ConfigUser from "./components/ConfigUser";
 import Exit from "./components/Exit";
+import MyContextProvider from "./context/UserContext"
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -28,6 +29,7 @@ const AppContainer = styled.div`
 
 const App = () => {
   return (
+    <MyContextProvider>
     <Router>
       <Routes>
         <Route
@@ -116,6 +118,7 @@ const App = () => {
         />
       </Routes>
     </Router>
+    </MyContextProvider>
   );
 };
 

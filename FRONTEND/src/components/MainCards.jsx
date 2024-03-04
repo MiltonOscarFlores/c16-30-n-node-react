@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect,  useState } from "react";
 import styled from "styled-components";
 import InfoSvg from "../assets/images/Info.svg";
 import WarningSvg from "../assets/images/Warning.svg";
@@ -7,6 +7,7 @@ import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
 import { useSearchParams } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
+
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -128,7 +129,7 @@ const MainCards = () => {
       return
     }
   }
-// quitar estado plantsData y reemplazar por data: plantsData
+// 
   const {isLoading, isError, data = {}, isFetching, fetchNextPage, hasNextPage, refetch, error} =  useInfiniteQuery(
   { queryKey: ['plants'],
     queryFn: async ({pageParam}) =>{
@@ -171,7 +172,6 @@ const MainCards = () => {
       [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
-  console.log(plants)
   return (
     <MainCardsContainer>
       { isLoading ? (
@@ -242,7 +242,7 @@ const MainCards = () => {
 
       {hasNextPage && <button onClick={() => fetchNextPage()}>Mostrar más</button>}
 
-      {!hasNextPage && !isError &&<span>No hay más resultados</span>}
+      {!hasNextPage && !isError && plants.length > 0 && <span>No hay más resultados</span>}
 
       {/* Modal */}
       {!!selectedPlant && (
