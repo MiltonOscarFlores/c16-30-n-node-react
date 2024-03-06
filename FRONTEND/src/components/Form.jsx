@@ -115,7 +115,7 @@ const Form = () => {
 
   const loginRequest = async (credentials) => {
     try {
-      const results = await fetch(`${import.meta.env.VITE_BACK_URL}/user/login`, {
+      const results = await fetch(`${import.meta.env.VITE_BASE_URL}/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -133,7 +133,6 @@ const Form = () => {
     }
     
   }
-console.log(myData)
   const submitLogin = (e) => {
     e.preventDefault();
 
