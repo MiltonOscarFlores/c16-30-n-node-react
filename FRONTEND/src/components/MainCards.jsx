@@ -205,7 +205,6 @@ const MainCards = () => {
       [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
-  console.log(plants);
   return (
     <MainCardsContainer>
       {isLoading ? (
@@ -220,9 +219,7 @@ const MainCards = () => {
             plants?.map((plant) => (
               <PlantCard key={plant.id_especie}>
                 <img
-                  src={`${
-                    import.meta.env.VITE_SERVER_URL
-                  }src/assets/plants_thumb/${plant.img}`}
+                  src={plant.img}
                   alt={plant.nombre}
                   style={{
                     maxWidth: "100%",

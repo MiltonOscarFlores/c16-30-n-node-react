@@ -110,8 +110,8 @@ const Form = () => {
     usuario: "",
     password: ""
   })
-  const [resultData, setResultData] = useState({})
   const [status, setStatus] = useState('')
+  const [errors, setErrors] = useState(null)
 
   const loginRequest = async (credentials) => {
     try {
@@ -119,59 +119,64 @@ const Form = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
-        credentials: 'include'
+        credentials: 'include',
+        mode: 'cors'
       })
 
-
       const data = await results.json()
-      setMyData(data.data.attributes.user)
-      setResultData(data)
-      navigate('/');
+      if(checkStatus(data)){
+        redirectPage('/')
+        setTimeout(() => {
+          setMyData(data.data.attributes.user) //context con datos del usuario
+        }, 1100);
+        
+      } 
       return 
     } catch (error) {
       console.log("Error de solicitud: ", error)
     }
-    
   }
+
   const submitLogin = (e) => {
     e.preventDefault();
-
+    setErrors(null)
+    setStatus('')
     const {name, value} = e.target
     setFormData({ ...formData, [name]: value})
     loginRequest(formData)
-    checkStatus()
     return
   };
 
   const checkInputErrors = (inputName) => {
-    if(resultData.errors !== undefined){
-      const err = resultData?.errors?.find(el => el.path === inputName)
-      return err !== undefined ? err.msg : undefined
+    if(errors){
+      const err = errors.find(el => el.path === inputName)
+      return err !== undefined ? err.msg : false
     }
-    return
+    return 
   }
   
-  const checkStatus = () => {
-    if(resultData.errors !== undefined ){
-      const err = resultData?.errors[0].message
-      setStatus(err) 
+  const checkStatus = (results) => {
+    if(results.errors !== undefined ){
+        if(results.errors[0].status){
+          const err = results?.errors[0].message
+          setStatus(err) 
+        } else {
+          const err = results.errors
+          setErrors(err)
+        }
+      return false
     } 
-    if(resultData.data !== undefined) {
-      const response = resultData?.data?.attributes.message
+      const response = results?.data.attributes.message
       setStatus(response)
-      redirectPage('/')
-    }
-    setTimeout(() => {
-      setStatus('')
-    }, 5000)
-    return
+    return true
   }
 
   const redirectPage = (route) => {
     setTimeout(() => {
       navigate(route)
-    }, 3000)
+    }, 1000)
   }
+
 
   return (
     <FormWrap>
