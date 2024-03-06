@@ -12,6 +12,7 @@ import Favoritos from "./components/Favoritos";
 import ConfigUser from "./components/ConfigUser";
 import Exit from "./components/Exit";
 import MyContextProvider from "./context/UserContext"
+import CambiarContraseña from "./components/CambiarContraseña";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -103,6 +104,16 @@ const App = () => {
               <GlobalStyle isAuthPage={false} />
               <NavbarUser />
               <ConfigUser />
+            </AppContainer>
+          }
+        />
+        <Route
+          path="/cambiarcontraseña"
+          element={
+            <AppContainer>
+              <GlobalStyle isAuthPage={false} />
+              <NavbarUser />
+              <CambiarContraseña />
             </AppContainer>
           }
         />

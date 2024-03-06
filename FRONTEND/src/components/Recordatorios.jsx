@@ -1,99 +1,106 @@
+import React, { useState } from "react";
 import styled from "styled-components";
 
-const Wrapper = styled.section`
-  @media (min-width: 768px) {
-  }
-
-  @media (min-width: 992px) {
-  }
-
-  @media (min-width: 1229px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1229px;
-    min-height: 600px;
-    margin: 0 auto;
-    background: rgb(199, 205, 176);
-    background: linear-gradient(
-      6deg,
-      rgba(199, 205, 176, 0) 16%,
-      rgba(199, 205, 176, 1) 85%
-    );
-    text-align: center;
-    border-radius: 15px;
-  }
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1229px;
+  min-height: 600px;
+  margin: 0 auto;
+  background: linear-gradient(
+    6deg,
+    rgba(199, 205, 176, 0) 16%,
+    rgba(199, 205, 176, 1) 85%
+  );
+  text-align: center;
+  border-radius: 15px;
 `;
 
 const Myh1 = styled.h1`
   width: 960px;
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
+  color: #424242;
+  padding: 3rem 0;
+`;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin-top: 20px;
+`;
+
+const LeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  gap: 15px;
+`;
+
+const Button1 = styled.button`
+  /* Estilos específicos para el botón en el formulario */
+  width: 152px;
+  height: 33px;
+  letter-spacing: 0.2px; /* aumenta el espaciado entre letras en 2 píxeles */
+
+  background: #c7cdb0;
+  color: #5d5b59;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 13px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 1.3px 1.5px 2px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s;
+
+  &:active {
+    transform: translateY(1px);
+    background-color: #3d4425;
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+    box-shadow: 1.5px 1.5px 2px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const RightPanel = styled.div`
+  width: 60%;
+  padding: 20px;
+  background-color: transparent;
+  border-radius: 10px;
   color: #424242;
 `;
 
-const WrapperBotones = styled.section`
-  display: flex;
-  width: 960px;
-  gap: 2rem;
-`;
-
-const MyButton = styled.button`
-  background-color: #e9e5d6;
-  color: #121712;
-  padding: 0.3rem 1rem;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 10px;
-`;
-
-const Myh2Wrapper = styled.section`
-  display: flex;
-  text-align: start;
-`;
-const Myh2 = styled.h2`
-  width: 960px;
-  font-size: 1.3rem;
-  font-weight: 700;
-`;
-
-const ListWrapper = styled.article`
-  display: flex;
-  flex-direction: column;
-  width: 960px;
-`;
-
-const WrapperCorazones = styled.section`
-  width: 60px;
-`;
-
-const WrapperTexto = styled.article`
-  width: 900px;
-`;
-
-////////////////////////////////////////////////////////////////////////
 const Recordatorios = () => {
+  const [selectedButton, setSelectedButton] = useState(null);
+
+  const handleButtonClick = (description) => {
+    setSelectedButton(description);
+  };
+
   return (
     <Wrapper>
       <Myh1>Recordatorios</Myh1>
-      <WrapperBotones>
-        <MyButton> Acelga</MyButton>
-        <MyButton> Ají</MyButton>
-        <MyButton> Ajo</MyButton>
-        <MyButton> Apio</MyButton>
-        <MyButton> Tomate</MyButton>
-      </WrapperBotones>
-      <Myh2Wrapper>
-        <Myh2>Favoritos</Myh2>
-      </Myh2Wrapper>
-      <ListWrapper>
-        <WrapperCorazones>corazon</WrapperCorazones>
-        <WrapperTexto> texto1</WrapperTexto>
-        <WrapperCorazones>corazon</WrapperCorazones>
-        <WrapperTexto> texto1</WrapperTexto>
-        <WrapperCorazones>corazon</WrapperCorazones>
-        <WrapperTexto> texto1</WrapperTexto>
-      </ListWrapper>
+      <Container>
+        <LeftColumn>
+          <Button1 onClick={() => handleButtonClick("Descripción del Botón 1")}>
+            Botón 1
+          </Button1>
+          <Button1 onClick={() => handleButtonClick("Descripción del Botón 2")}>
+            Botón 2
+          </Button1>
+          <Button1 onClick={() => handleButtonClick("Descripción del Botón 3")}>
+            Botón 3
+          </Button1>
+        </LeftColumn>
+        <RightPanel>
+          <h2>Descripción:</h2>
+          <p>{selectedButton}</p>
+        </RightPanel>
+      </Container>
     </Wrapper>
   );
 };
