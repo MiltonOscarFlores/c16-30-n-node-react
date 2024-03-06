@@ -11,6 +11,8 @@ import Recordatorios from "./components/Recordatorios";
 import Favoritos from "./components/Favoritos";
 import ConfigUser from "./components/ConfigUser";
 import Exit from "./components/Exit";
+import MyContextProvider from "./context/UserContext"
+import CambiarContraseña from "./components/CambiarContraseña";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -28,6 +30,7 @@ const AppContainer = styled.div`
 
 const App = () => {
   return (
+    <MyContextProvider>
     <Router>
       <Routes>
         <Route
@@ -105,6 +108,16 @@ const App = () => {
           }
         />
         <Route
+          path="/cambiarcontraseña"
+          element={
+            <AppContainer>
+              <GlobalStyle isAuthPage={false} />
+              <NavbarUser />
+              <CambiarContraseña />
+            </AppContainer>
+          }
+        />
+        <Route
           path="/exit"
           element={
             <AppContainer>
@@ -116,6 +129,7 @@ const App = () => {
         />
       </Routes>
     </Router>
+    </MyContextProvider>
   );
 };
 

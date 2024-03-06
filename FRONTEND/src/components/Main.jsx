@@ -94,11 +94,12 @@ const MyIconSearch = styled.div`
   cursor: pointer;
 `;
 const MySpanVector = styled.span`
-  background: url(${VectorSearch}) no-repeat center center;
-  background-size: contain; /* Ajustamos el tamaño del fondo para contener el vector completamente */
-  width: 18px;
-  height: 18px;
-  display: block; /* Aseguramos que el span se comporte como un bloque para ocupar completamente su contenedor */
+  color: #e9e5d6;
+  &:active {
+    transform: translateY(1px);
+    transition: background-color 1s, color 0.2s, transform 0.1s ease-in-out;
+    color: white;
+  }
 `;
 
 const MyVectorMacetas = styled.div`
@@ -118,9 +119,16 @@ const Main = () => {
 
   const search = (e) => {
     e.preventDefault();
-    return inputValue
-      ? setSearchParams({ search: inputValue })
-      : setSearchParams({});
+    const params = Object.fromEntries(searchParams.entries());
+
+    if (inputValue) {
+      params.search = inputValue;
+    }
+    if (params.search && !inputValue) {
+      delete params.search;
+    }
+    setSearchParams(params);
+    return;
   };
 
   return (
@@ -141,7 +149,12 @@ const Main = () => {
           }}
         />
         <MyIconSearch onClick={search}>
-          <MySpanVector />
+          <MySpanVector>
+            <i
+              className="fa fa-search"
+              aria-hidden="true"
+            ></i>
+          </MySpanVector>
         </MyIconSearch>
       </ContainerLeft>
       <ContainerRight>

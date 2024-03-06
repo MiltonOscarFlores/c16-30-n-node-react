@@ -103,3 +103,16 @@ input[type="checkbox"] {
   margin-bottom: 10px;
   outline: 1px solid green;
 }
+
+.iconoUsuario {
+  color: #e9e5d6;
+  background-color: #464e2e;
+  font-size: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:active {
+    transform: translateY(1px);
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+  }
+}

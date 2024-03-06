@@ -28,8 +28,9 @@ const Wrapper = styled.section`
 const Myh1 = styled.h1`
   width: 960px;
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #424242;
+  padding: 3rem 0;
 `;
 const Exit = () => {
   return (

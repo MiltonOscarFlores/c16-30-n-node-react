@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useContext } from 'react'
+import MyContext from '../context/MyContext'
 
 const FormWrap = styled.section`
   margin: 0 auto;
@@ -101,32 +103,113 @@ const MyH1 = styled.h1`
 `;
 //////////////////////////////////////////////////////
 const Form = () => {
-  const handleSubmit = (event) => {
-    // Aquí puedes realizar lógica adicional si es necesario
-    // pero por ahora, simplemente evitar la acción predeterminada del formulario
-    event.preventDefault();
+
+  const navigate = useNavigate()
+  const {myData, setMyData} = useContext(MyContext)
+  const [formData, setFormData] = useState({
+    usuario: "",
+    password: ""
+  })
+  const [resultData, setResultData] = useState({})
+  const [status, setStatus] = useState('')
+
+  const loginRequest = async (credentials) => {
+    try {
+      const results = await fetch(`${import.meta.env.VITE_BASE_URL}/user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+        credentials: 'include'
+      })
+
+
+      const data = await results.json()
+      setMyData(data.data.attributes.user)
+      setResultData(data)
+      navigate('/');
+      return 
+    } catch (error) {
+      console.log("Error de solicitud: ", error)
+    }
+    
+  }
+  const submitLogin = (e) => {
+    e.preventDefault();
+
+    const {name, value} = e.target
+    setFormData({ ...formData, [name]: value})
+    loginRequest(formData)
+    checkStatus()
+    return
   };
+
+  const checkInputErrors = (inputName) => {
+    if(resultData.errors !== undefined){
+      const err = resultData?.errors?.find(el => el.path === inputName)
+      return err !== undefined ? err.msg : undefined
+    }
+    return
+  }
+  
+  const checkStatus = () => {
+    if(resultData.errors !== undefined ){
+      const err = resultData?.errors[0].message
+      setStatus(err) 
+    } 
+    if(resultData.data !== undefined) {
+      const response = resultData?.data?.attributes.message
+      setStatus(response)
+      redirectPage('/')
+    }
+    setTimeout(() => {
+      setStatus('')
+    }, 5000)
+    return
+  }
+
+  const redirectPage = (route) => {
+    setTimeout(() => {
+      navigate(route)
+    }, 3000)
+  }
+
   return (
     <FormWrap>
-      <MyForm onSubmit={handleSubmit}>
+      <MyForm onSubmit={submitLogin}>
+        {status && <span>{status}</span>}
         <MyH1>Iniciar sesión</MyH1>
         <MyInput
           type="email"
           placeholder="Email"
+          name="usuario"
+          onChange={(e) => setFormData({ ...formData, usuario: e.target.value })}
         />
+        {checkInputErrors('usuario')
+        &&
+        <span>
+          {checkInputErrors('usuario')}
+        </span>
+        }
+        
         <MyInput
           type="password"
           placeholder="Contaseña"
+          name="password"
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         />
+        {checkInputErrors('password')
+        &&
+        <span>
+          {checkInputErrors('password')}
+        </span>
+        }
         <MyCheckboxContainer>
           <MyCheckbox type="checkbox" />
           <MyLabel>
             <SpanRecuerdame>Recuérdame</SpanRecuerdame>
           </MyLabel>
         </MyCheckboxContainer>
-        <Link to="/mainuser">
           <ButtonGreenForm>Iniciar sesión</ButtonGreenForm>
-        </Link>
         <Parrafo>
           ¿No tienes una cuenta? <br />
           <Link to="/signup">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect,  useState } from "react";
 import styled from "styled-components";
 import InfoSvg from "../assets/images/Info.svg";
 import WarningSvg from "../assets/images/Warning.svg";
@@ -6,6 +6,7 @@ import FavSvg from "../assets/images/Fav.svg";
 import Fav2Svg from "../assets/images/Fav2.svg";
 import InfoPlanta from "./InfoPlanta";
 import { useSearchParams } from "react-router-dom";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const MainCardsContainer = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const MainCardsContainer = styled.div`
 const PlantCard = styled.div`
   background-color: #c7cdb0;
   width: 150px;
-  height: 200px;
+  height: 250px;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px;
@@ -70,7 +71,6 @@ const Modal = styled.div`
   width: 40%;
   min-height: 500px;
   background-color: #c3c0b4;
-  outline: 1px solid red;
   padding: 2rem 6rem;
   border-radius: 5px;
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
@@ -103,83 +103,86 @@ const ContenedorToxicos = styled.section`
   min-height: 40px;
 `;
 
+const MsjPaginado = styled.section`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1100px;
+  padding: 30px;
+  color: #424242;
+  font-weight: 500;
+
+  &:active {
+    transform: translateY(1px);
+    transition: background-color 1s, color 0.3s, transform 0.1s ease-in-out;
+  }
+`;
+
 const MainCards = () => {
-  const [pokemonData, setPokemonData] = useState([]);
   const [favIcons, setFavIcons] = useState({});
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [selectedPlant, setSelectedPlant] = useState(null);
   const [warningClicked, setWarningClicked] = useState({});
-  const [noResults, setNoResults] = useState(false);
   const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    const fetchPokemonData = async () => {
-      try {
-        const response = await fetch(
-          "https://pokeapi.co/api/v2/pokemon?limit=75"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-
-        // Obtener detalles de cada Pokemon
-        const detailedPokemonData = await Promise.all(
-          data.results.map(async (pokemon) => {
-            const detailsResponse = await fetch(pokemon.url);
-            if (!detailsResponse.ok) {
-              throw new Error("Network response was not ok");
-            }
-            const detailsData = await detailsResponse.json();
-
-            // Hacer una solicitud adicional para obtener información de la cadena de evolución
-            const evolutionChainResponse = await fetch(
-              `https://pokeapi.co/api/v2/evolution-chain/${detailsData.id}/`
-            );
-            if (!evolutionChainResponse.ok) {
-              throw new Error("Network response was not ok");
-            }
-            const evolutionChainData = await evolutionChainResponse.json();
-
-            return {
-              name: pokemon.name,
-              id: detailsData.id,
-              image: detailsData.sprites.front_default,
-              isBaby: evolutionChainData.chain.is_baby,
-              isFavorite: false, // Inicialmente asumimos que no es favorito
-            };
-          })
-        );
-
-        // Filtrar resultados si hay parámetros de búsqueda
-        if (searchParams?.size > 0) {
-          const params = Object.fromEntries(searchParams.entries());
-          const searchExp = new RegExp(`.*${params.search}.*`, "i");
-          const filteredData = detailedPokemonData.filter((pokemon) =>
-            searchExp.test(pokemon.name)
-          );
-
-          // Actualizar el estado con los resultados filtrados
-          setPokemonData(filteredData);
-          setNoResults(filteredData.length === 0);
-        } else {
-          // Actualizar el estado con la información de todos los Pokémon
-          setPokemonData(detailedPokemonData);
-          setNoResults(false);
-        }
-
-        // Actualizar el estado con la información de los Pokémon
-        setFavIcons(
-          Object.fromEntries(
-            detailedPokemonData.map((pokemon) => [pokemon.id, false])
-          )
-        );
-      } catch (error) {
-        console.error("Error fetching Pokemon data:", error);
+  const fetchData = async (page = 1) => {
+    let params = {};
+    try {
+      //Obtener parámetros de búsqueda si hay
+      if (searchParams?.size > 0) {
+        params = Object.fromEntries(searchParams.entries());
       }
-    };
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/plants/filterBy?page=${page}&limit=20&clima=${
+          params.clima || ""
+        }&provincia=${params.provincia || ""}&tipo_planta=${
+          params.tipo_planta || ""
+        }&nombre=${params.search || ""}`
+      );
+      const obj = await response.json();
+      return {
+        plants: obj.data,
+        pagination: obj.pagination,
+      };
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      return;
+    }
+  };
+  // quitar estado plantsData y reemplazar por data: plantsData
+  const {
+    isLoading,
+    isError,
+    data = {},
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    error,
+  } = useInfiniteQuery({
+    queryKey: ["plants"],
+    queryFn: async ({ pageParam }) => {
+      const res = await fetchData(pageParam);
+      return res;
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage) {
+        return undefined;
+      }
+      return lastPage?.pagination?.next_page || undefined;
+    },
+  });
 
-    fetchPokemonData();
+  useEffect(() => {
+    fetchData();
+    refetch();
   }, [searchParams]);
+
+  const plants =
+    Object.entries(data).length === 0 || data.pages[0] === undefined
+      ? []
+      : data?.pages?.flatMap((el) => el.plants);
 
   const handleFavClick = (pokemonId) => {
     setFavIcons((prevFavIcons) => ({
@@ -188,12 +191,12 @@ const MainCards = () => {
     }));
   };
 
-  const handleInfoClick = (pokemon) => {
-    setSelectedPokemon(pokemon);
+  const handleInfoClick = (plant) => {
+    setSelectedPlant(plant);
   };
 
   const closeModal = () => {
-    setSelectedPokemon(null);
+    setSelectedPlant(null);
   };
 
   const handleWarningClick = (pokemonId) => {
@@ -202,83 +205,107 @@ const MainCards = () => {
       [pokemonId]: !prevWarningClicked[pokemonId],
     }));
   };
-
+  console.log(plants);
   return (
     <MainCardsContainer>
-      {noResults ? (
-        <div>No hay resultados</div>
+      {isLoading ? (
+        <div>Cargando...</div>
+      ) : isError ? (
+        <span>Error al cargar los datos</span>
       ) : (
-        pokemonData.map((pokemon) => (
-          <PlantCard key={pokemon.id}>
-            <img
-              src={pokemon.image}
-              alt={pokemon.name}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "120px",
-                marginBottom: "8px",
-              }}
-            />
-            <Myh3>{pokemon.name}</Myh3>
-            <ContenedorToxicos>
-              {warningClicked[pokemon.id] && (
-                <p
+        <>
+          {plants.length === 0 ? (
+            <div>No hay resultados</div>
+          ) : (
+            plants?.map((plant) => (
+              <PlantCard key={plant.id_especie}>
+                <img
+                  src={`${
+                    import.meta.env.VITE_SERVER_URL
+                  }src/assets/plants_thumb/${plant.img}`}
+                  alt={plant.nombre}
                   style={{
-                    margin: 0,
-                    fontSize: "20px",
-                    background: "#B5C09C",
-                    borderRadius: "5px",
+                    maxWidth: "100%",
+                    maxHeight: "120px",
+                    marginBottom: "8px",
                   }}
-                >
-                  🐈‍⬛ 🐕‍🦺 👶
-                </p>
-              )}
-            </ContenedorToxicos>
-            <WrapperBtnCards>
-              {pokemon.isBaby && (
-                <BtnWarning onClick={() => handleWarningClick(pokemon.id)}>
-                  <img
-                    src={WarningSvg}
-                    alt="Warning"
-                    style={{ width: "20px", height: "20px" }}
-                  />
-                </BtnWarning>
-              )}
-              <BtnFav onClick={() => handleFavClick(pokemon.id)}>
-                <img
-                  src={favIcons[pokemon.id] ? Fav2Svg : FavSvg}
-                  alt="Favorite"
-                  style={{ width: "20px", height: "20px" }}
                 />
-              </BtnFav>
-              <BtnInfo onClick={() => handleInfoClick(pokemon)}>
-                <img
-                  src={InfoSvg}
-                  alt="Info"
-                  style={{ width: "20px", height: "20px" }}
-                />
-              </BtnInfo>
-            </WrapperBtnCards>
-          </PlantCard>
-        ))
+                <Myh3>{plant.nombre}</Myh3>
+                <ContenedorToxicos>
+                  {warningClicked[plant.id_especie] && (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "20px",
+                        background: "#B5C09C",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      🐈‍⬛ 🐕 🐇
+                    </p>
+                  )}
+                </ContenedorToxicos>
+                <WrapperBtnCards>
+                  {!!plant.toxica_para_mascotas && (
+                    <BtnWarning
+                      onClick={() => handleWarningClick(plant.id_especie)}
+                    >
+                      <img
+                        src={WarningSvg}
+                        alt="Warning"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                    </BtnWarning>
+                  )}
+                  <BtnFav onClick={() => handleFavClick(plant.id_especie)}>
+                    <img
+                      src={favIcons[plant.id_especie] ? Fav2Svg : FavSvg}
+                      alt="Favorite"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </BtnFav>
+                  <BtnInfo onClick={() => handleInfoClick(plant)}>
+                    <img
+                      src={InfoSvg}
+                      alt="Info"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </BtnInfo>
+                </WrapperBtnCards>
+              </PlantCard>
+            ))
+          )}
+        </>
+      )}
+
+      {(isFetching || hasNextPage) && (
+        <button onClick={() => fetchNextPage()}>
+          <MsjPaginado>Mostrar más...</MsjPaginado>
+        </button>
+      )}
+
+      {!hasNextPage && !isFetching && plants.length > 0 && (
+        <span>
+          <MsjPaginado>No hay más resultados.</MsjPaginado>
+        </span>
       )}
 
       {/* Modal */}
-      {selectedPokemon && (
+      {!!selectedPlant && (
         <>
           <Overlay
-            show={!!selectedPokemon}
+            show={!!selectedPlant}
             onClick={closeModal}
           />
-          <Modal show={!!selectedPokemon}>
+          <Modal show={selectedPlant != null}>
             <button
               className="close-modal"
               onClick={closeModal}
             >
               &times;
             </button>
-            <ModalTitle>Información de {selectedPokemon.name}</ModalTitle>
-            <InfoPlanta />
+            <ModalTitle>Información de {selectedPlant.nombre}</ModalTitle>
+            <InfoPlanta idPlanta={selectedPlant.id_especie} />
           </Modal>
         </>
       )}
