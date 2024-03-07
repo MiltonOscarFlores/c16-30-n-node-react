@@ -104,10 +104,14 @@ const NavbarUser = () => {
   const logout = async () => {
     try {
 
-      const response = await fetch(`${import.meta.env.VITE_BACK_URL}/user/logout`, {
-        credentials: 'include' 
+      const response = await fetch(`${import.meta.env.VITE_LOCAL_URL}/user/logout`, {
+        method: 'GET',
+        credentials: 'include',
+        mode: 'cors' 
       });
       const data = await response.json();
+      console.log(data)
+      console.log(document.cookie)
       if (data.data[0].status === 200) {
         setMyData({});
         navigate('/');
