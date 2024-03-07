@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useContext } from 'react'
 import MyContext from '../context/MyContext'
 
+
 const FormWrap = styled.section`
   margin: 0 auto;
   background: #e9e5d6;
@@ -115,7 +116,7 @@ const Form = () => {
 
   const loginRequest = async (credentials) => {
     try {
-      const results = await fetch(`${import.meta.env.VITE_BASE_URL}/user/login`, {
+      const results = await fetch(`${import.meta.env.VITE_BASE_URL || import.meta.env.VITE_LOCAL_URL}/user/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),

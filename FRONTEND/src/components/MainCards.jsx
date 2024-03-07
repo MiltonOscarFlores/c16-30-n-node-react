@@ -133,7 +133,7 @@ const MainCards = () => {
       }
       const response = await fetch(
         `${
-          import.meta.env.VITE_BASE_URL
+          import.meta.env.VITE_BASE_URL || import.meta.env.VITE_LOCAL_URL
         }/plants/filterBy?page=${page}&limit=20&clima=${
           params.clima || ""
         }&provincia=${params.provincia || ""}&tipo_planta=${
