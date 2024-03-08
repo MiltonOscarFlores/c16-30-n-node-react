@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from 'react'
-import MyContext from '../context/MyContext'
-
+import { useState, useContext } from "react";
+import MyContext from "../context/MyContext";
 
 const FormWrap = styled.section`
   margin: 0 auto;
@@ -102,120 +101,133 @@ const MyH1 = styled.h1`
   text-align: center;
   padding-top: 10px;
 `;
+
+const SpanError = styled.span`
+  color: #ff4040;
+  font-size: 0.6rem;
+  text-align: end;
+`;
+const SpanStatus = styled.span`
+  color: #ff4040;
+  font-size: 0.8rem;
+  text-align: center;
+  padding-top: 1rem;
+  font-weight: 600;
+`;
 //////////////////////////////////////////////////////
 const Form = () => {
-
-  const navigate = useNavigate()
-  const {myData, setMyData} = useContext(MyContext)
+  const navigate = useNavigate();
+  const { myData, setMyData } = useContext(MyContext);
   const [formData, setFormData] = useState({
     usuario: "",
-    password: ""
-  })
-  const [status, setStatus] = useState('')
-  const [errors, setErrors] = useState(null)
+    password: "",
+  });
+  const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState(null);
 
   const loginRequest = async (credentials) => {
     try {
-      const results = await fetch(`${import.meta.env.VITE_BASE_URL || import.meta.env.VITE_LOCAL_URL}/user/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-        credentials: 'include',
-        mode: 'cors'
-      })
+      const results = await fetch(
+        `${
+          import.meta.env.VITE_BASE_URL || import.meta.env.VITE_LOCAL_URL
+        }/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+          credentials: "include",
+          mode: "cors",
+        }
+      );
 
-      const data = await results.json()
-      if(checkStatus(data)){
-        redirectPage('/')
+      const data = await results.json();
+      if (checkStatus(data)) {
+        redirectPage("/");
         setTimeout(() => {
-          setMyData(data.data.attributes.user) //context con datos del usuario
+          setMyData(data.data.attributes.user); //context con datos del usuario
         }, 1100);
-        
-      } 
-      return 
+      }
+      return;
     } catch (error) {
-      console.log("Error de solicitud: ", error)
+      console.log("Error de solicitud: ", error);
     }
-  }
+  };
 
   const submitLogin = (e) => {
     e.preventDefault();
-    setErrors(null)
-    setStatus('')
-    const {name, value} = e.target
-    setFormData({ ...formData, [name]: value})
-    loginRequest(formData)
-    return
+    setErrors(null);
+    setStatus("");
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    loginRequest(formData);
+    return;
   };
 
   const checkInputErrors = (inputName) => {
-    if(errors){
-      const err = errors.find(el => el.path === inputName)
-      return err !== undefined ? err.msg : false
+    if (errors) {
+      const err = errors.find((el) => el.path === inputName);
+      return err !== undefined ? err.msg : false;
     }
-    return 
-  }
-  
+    return;
+  };
+
   const checkStatus = (results) => {
-    if(results.errors !== undefined ){
-        if(results.errors[0].status){
-          const err = results?.errors[0].message
-          setStatus(err) 
-        } else {
-          const err = results.errors
-          setErrors(err)
-        }
-      return false
-    } 
-      const response = results?.data.attributes.message
-      setStatus(response)
-    return true
-  }
+    if (results.errors !== undefined) {
+      if (results.errors[0].status) {
+        const err = results?.errors[0].message;
+        setStatus(err);
+      } else {
+        const err = results.errors;
+        setErrors(err);
+      }
+      return false;
+    }
+    const response = results?.data.attributes.message;
+    setStatus(response);
+    return true;
+  };
 
   const redirectPage = (route) => {
     setTimeout(() => {
-      navigate(route)
-    }, 1000)
-  }
-
+      navigate(route);
+    }, 1000);
+  };
 
   return (
     <FormWrap>
       <MyForm onSubmit={submitLogin}>
-        {status && <span>{status}</span>}
+        {status && <SpanStatus>{status}</SpanStatus>}
         <MyH1>Iniciar sesión</MyH1>
         <MyInput
           type="email"
           placeholder="Email"
           name="usuario"
-          onChange={(e) => setFormData({ ...formData, usuario: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, usuario: e.target.value })
+          }
         />
-        {checkInputErrors('usuario')
-        &&
-        <span>
-          {checkInputErrors('usuario')}
-        </span>
-        }
-        
+        {checkInputErrors("usuario") && (
+          <SpanError>{checkInputErrors("usuario")}</SpanError>
+        )}
+
         <MyInput
           type="password"
           placeholder="Contaseña"
           name="password"
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
         />
-        {checkInputErrors('password')
-        &&
-        <span>
-          {checkInputErrors('password')}
-        </span>
-        }
+        {checkInputErrors("password") && (
+          <SpanError>{checkInputErrors("password")}</SpanError>
+        )}
         <MyCheckboxContainer>
           <MyCheckbox type="checkbox" />
           <MyLabel>
             <SpanRecuerdame>Recuérdame</SpanRecuerdame>
           </MyLabel>
         </MyCheckboxContainer>
-          <ButtonGreenForm>Iniciar sesión</ButtonGreenForm>
+        <ButtonGreenForm>Iniciar sesión</ButtonGreenForm>
         <Parrafo>
           ¿No tienes una cuenta? <br />
           <Link to="/signup">
